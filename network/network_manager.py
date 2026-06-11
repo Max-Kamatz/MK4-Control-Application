@@ -9,8 +9,8 @@ from utils.constants import TARGET_IP, TCP_PELCO_PORT, UDP_TELEMETRY_PORT, UP_PR
 logger = setup_logger()
 
 class NetworkManager:
-    def __init__(self):
-        self.target_ip = TARGET_IP
+    def __init__(self, target_ip: Optional[str] = None):
+        self.target_ip = target_ip or TARGET_IP
         self.tcp_port = TCP_PELCO_PORT
         self.udp_telemetry_port = UDP_TELEMETRY_PORT
         self.up_protocol_port = UP_PROTOCOL_PORT
@@ -27,6 +27,15 @@ class NetworkManager:
 
         self.telemetry_callback: Optional[Callable] = None
         self.connection_status_callback: Optional[Callable] = None
+
+    def set_target_ip(self, ip: str):
+        """Update the target IP address (must be disconnected first)."""
+        if self.connected:
+            logger.warning("Cannot change IP while connected")
+            return False
+        self.target_ip = ip
+        logger.info(f"Target IP updated to {ip}")
+        return True
 
     async def connect(self) -> bool:
         try:

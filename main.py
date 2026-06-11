@@ -52,11 +52,17 @@ def main():
         lambda: main_window.network_thread.send_pan_tilt(0.0, 0.0)
     )
 
-    combined_tab.connection_toggle.connect(
-        lambda: main_window.network_thread.connect_to_system()
-        if not main_window.network_thread.network_manager or not main_window.network_thread.network_manager.connected
-        else main_window.network_thread.disconnect_from_system()
-    )
+    def handle_combined_connection_toggle():
+        if not main_window.network_thread.network_manager or not main_window.network_thread.network_manager.connected:
+            target_ip = combined_tab.get_target_ip()
+            # Update video streams to use new IP
+            combined_tab.update_video_streams_ip(target_ip)
+            # Connect to system with new IP
+            main_window.network_thread.connect_to_system(target_ip)
+        else:
+            main_window.network_thread.disconnect_from_system()
+
+    combined_tab.connection_toggle.connect(handle_combined_connection_toggle)
 
     # Connect slider control tab
     control_tab.pan_tilt_changed.connect(main_window.network_thread.send_pan_tilt)
@@ -64,11 +70,14 @@ def main():
         lambda: main_window.network_thread.send_pan_tilt(0.0, 0.0)
     )
 
-    control_tab.reconnect_button.clicked.connect(
-        lambda: main_window.network_thread.connect_to_system()
-        if not main_window.network_thread.network_manager or not main_window.network_thread.network_manager.connected
-        else main_window.network_thread.disconnect_from_system()
-    )
+    def handle_control_connection_toggle():
+        if not main_window.network_thread.network_manager or not main_window.network_thread.network_manager.connected:
+            target_ip = control_tab.get_target_ip()
+            main_window.network_thread.connect_to_system(target_ip)
+        else:
+            main_window.network_thread.disconnect_from_system()
+
+    control_tab.reconnect_button.clicked.connect(handle_control_connection_toggle)
 
     # Telemetry updates both tabs
     main_window.network_thread.telemetry_received.connect(

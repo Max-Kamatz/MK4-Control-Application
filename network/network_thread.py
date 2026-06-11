@@ -147,8 +147,13 @@ class NetworkThread(QThread):
                 logger.error(f"Error sending focus command: {e}")
 
     @pyqtSlot()
-    def connect_to_system(self):
+    @pyqtSlot(str)
+    def connect_to_system(self, target_ip: str = None):
         if self.loop and self.network_manager:
+            # Update target IP if provided
+            if target_ip:
+                self.network_manager.set_target_ip(target_ip)
+
             future = asyncio.run_coroutine_threadsafe(
                 self.network_manager.connect(),
                 self.loop

@@ -4,7 +4,7 @@ Combined video display and PTZ control tab - shows streams and trackpad control 
 """
 
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
-                             QGroupBox, QLabel, QGridLayout, QPushButton)
+                             QGroupBox, QLabel, QGridLayout, QPushButton, QLineEdit)
 from PyQt6.QtCore import Qt, pyqtSignal
 from gui.widgets.rtsp_video_widget import RTSPVideoWidget
 from gui.widgets.ptz_trackpad import PTZControlWidget
@@ -116,6 +116,29 @@ class CombinedControlTab(QWidget):
         # Connection status group
         status_group = QGroupBox("Connection")
         status_layout = QVBoxLayout()
+
+        # IP Address input
+        ip_label = QLabel("Target IP Address:")
+        ip_label.setStyleSheet("font-size: 10pt; font-weight: bold;")
+        status_layout.addWidget(ip_label)
+
+        self.ip_input = QLineEdit()
+        self.ip_input.setText(self.config['network']['target_ip'])
+        self.ip_input.setPlaceholderText("192.168.1.100")
+        self.ip_input.setStyleSheet("""
+            QLineEdit {
+                padding: 8px;
+                font-size: 11pt;
+                font-family: 'Courier New', monospace;
+                background-color: #2b2b2b;
+                border: 2px solid #555;
+                border-radius: 4px;
+            }
+            QLineEdit:focus {
+                border: 2px solid #2a82da;
+            }
+        """)
+        status_layout.addWidget(self.ip_input)
 
         self.connection_indicator = QLabel("● Disconnected")
         self.connection_indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -241,6 +264,36 @@ class CombinedControlTab(QWidget):
         self.actual_pan_label.setText(f"{pan:.1f}°")
         self.actual_tilt_label.setText(f"{tilt:.1f}°")
 
+    def get_target_ip(self) -> str:
+        """Get the current target IP from the input field."""
+        return self.ip_input.text().strip()
+
+    def update_video_streams_ip(self, new_ip: str):
+        """Update video stream URLs with new IP address."""
+        # Stop existing streams
+        if hasattr(self, 'thermal_widget'):
+            self.thermal_widget.stream_thread.stop()
+        if hasattr(self, 'daylight_widget'):
+            self.daylight_widget.stream_thread.stop()
+        if hasattr(self, 'swir_widget'):
+            self.swir_widget.stream_thread.stop()
+
+        # Update URLs with new IP
+        thermal_url = f"rtsp://{new_ip}:7031/Cam1Stream1"
+        daylight_url = f"rtsp://{new_ip}:7031/Cam2Stream1"
+        swir_url = f"rtsp://{new_ip}:7031/Cam3Stream1"
+
+        # Restart streams with new URLs
+        self.thermal_widget.stream_thread.rtsp_url = thermal_url
+        self.daylight_widget.stream_thread.rtsp_url = daylight_url
+        self.swir_widget.stream_thread.rtsp_url = swir_url
+
+        self.thermal_widget.stream_thread.start()
+        self.daylight_widget.stream_thread.start()
+        self.swir_widget.stream_thread.start()
+
+        logger.info(f"Video streams updated to IP: {new_ip}")
+
     def update_connection_status(self, connected: bool):
         """Update connection status indicator."""
         if connected:
@@ -252,6 +305,7 @@ class CombinedControlTab(QWidget):
                 padding: 15px;
             """)
             self.connect_button.setText("Disconnect")
+            self.ip_input.setEnabled(False)  # Disable IP changes while connected
         else:
             self.connection_indicator.setText("● Disconnected")
             self.connection_indicator.setStyleSheet("""
@@ -261,6 +315,7 @@ class CombinedControlTab(QWidget):
                 padding: 15px;
             """)
             self.connect_button.setText("Connect")
+            self.ip_input.setEnabled(True)  # Enable IP changes when disconnected
 
     def closeEvent(self, event):
         """Clean up video streams on close."""

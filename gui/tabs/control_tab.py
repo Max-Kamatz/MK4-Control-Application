@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
-                             QLabel, QSlider, QPushButton, QGroupBox)
+                             QLabel, QSlider, QPushButton, QGroupBox, QLineEdit)
 from PyQt6.QtCore import Qt, pyqtSignal
 from utils.constants import load_config, PAN_MIN, PAN_MAX, TILT_MIN, TILT_MAX
 from utils.logger import setup_logger
@@ -134,6 +134,29 @@ class ControlTab(QWidget):
         group = QGroupBox("Connection Status")
         layout = QVBoxLayout()
 
+        # IP Address input
+        ip_label = QLabel("Target IP Address:")
+        ip_label.setStyleSheet("font-size: 10pt; font-weight: bold;")
+        layout.addWidget(ip_label)
+
+        self.ip_input = QLineEdit()
+        self.ip_input.setText(self.config['network']['target_ip'])
+        self.ip_input.setPlaceholderText("192.168.1.100")
+        self.ip_input.setStyleSheet("""
+            QLineEdit {
+                padding: 8px;
+                font-size: 11pt;
+                font-family: 'Courier New', monospace;
+                background-color: #2b2b2b;
+                border: 2px solid #555;
+                border-radius: 4px;
+            }
+            QLineEdit:focus {
+                border: 2px solid #2a82da;
+            }
+        """)
+        layout.addWidget(self.ip_input)
+
         self.connection_indicator = QLabel("● Disconnected")
         self.connection_indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.connection_indicator.setStyleSheet("""
@@ -176,6 +199,10 @@ class ControlTab(QWidget):
         self.actual_pan_label.setText(f"{pan:.1f}°")
         self.actual_tilt_label.setText(f"{tilt:.1f}°")
 
+    def get_target_ip(self) -> str:
+        """Get the current target IP from the input field."""
+        return self.ip_input.text().strip()
+
     def update_connection_status(self, connected: bool):
         if connected:
             self.connection_indicator.setText("● Connected")
@@ -186,6 +213,7 @@ class ControlTab(QWidget):
                 padding: 20px;
             """)
             self.reconnect_button.setText("Disconnect")
+            self.ip_input.setEnabled(False)  # Disable IP changes while connected
         else:
             self.connection_indicator.setText("● Disconnected")
             self.connection_indicator.setStyleSheet("""
@@ -195,3 +223,4 @@ class ControlTab(QWidget):
                 padding: 20px;
             """)
             self.reconnect_button.setText("Connect")
+            self.ip_input.setEnabled(True)  # Enable IP changes when disconnected
