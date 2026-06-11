@@ -1,0 +1,8 @@
+SSH : User = "silentsentinel", Pass = "Sentinel123"
+RTSP stream thermal = "rtsp://192.168.1.100:7031/Cam1Stream1"
+RTSP stream daylight = "rtsp://192.168.1.100:7031/Cam2Stream1"
+RTSP stream SWIR = "rtsp://192.168.1.100:7031/Cam3Stream1"
+
+TCP Pelco Port : 54000
+UDP Port : 58000
+UP UDP Port : 58004 / 2

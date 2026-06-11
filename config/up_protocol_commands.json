@@ -1,0 +1,56 @@
+{
+  "protocol_version": "2.4.7",
+  "message_structure": {
+    "header_size": 8,
+    "magic_bytes": "0x5550",
+    "checksum_type": "CRC16"
+  },
+  "commands": {
+    "pan_tilt_absolute": {
+      "command_id": 1,
+      "description": "Set absolute pan/tilt position",
+      "payload_format": "two 32-bit signed integers (pan, tilt in degrees * 100)"
+    },
+    "pan_tilt_relative": {
+      "command_id": 2,
+      "description": "Move pan/tilt relative to current position",
+      "payload_format": "two 32-bit signed integers (pan, tilt in degrees * 100)"
+    },
+    "query_position": {
+      "command_id": 10,
+      "description": "Query current gimbal position",
+      "payload_format": "none"
+    },
+    "query_status": {
+      "command_id": 11,
+      "description": "Query gimbal system status",
+      "payload_format": "none"
+    },
+    "stop_movement": {
+      "command_id": 5,
+      "description": "Stop all gimbal movement",
+      "payload_format": "none"
+    },
+    "zoom": {
+      "command_id": 3,
+      "description": "Zoom control",
+      "payload_format": "32-bit signed integer (zoom speed * 100)"
+    },
+    "focus": {
+      "command_id": 4,
+      "description": "Focus control",
+      "payload_format": "32-bit signed integer (focus speed * 100)"
+    }
+  },
+  "responses": {
+    "position_response": {
+      "response_id": 10,
+      "payload_format": "two 32-bit signed integers (pan, tilt in degrees * 100)"
+    },
+    "status_response": {
+      "response_id": 11,
+      "payload_format": "status flags, error codes"
+    }
+  },
+  "note": "This is a template configuration. Actual command IDs and payload formats must be determined from External_UP_protocol_v2.4.7.pdf"
+}

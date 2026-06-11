@@ -1,0 +1,41 @@
+{
+  "system": {
+    "name": "MK4 Control Application",
+    "version": "0.1.0"
+  },
+  "network": {
+    "target_ip": "192.168.1.100",
+    "tcp_pelco_port": 54000,
+    "udp_telemetry_port": 58000,
+    "up_protocol_port": 58004,
+    "connection_timeout": 5,
+    "reconnect_interval": 5
+  },
+  "rtsp_streams": {
+    "thermal": {
+      "url": "rtsp://192.168.1.100:7031/Cam1Stream1",
+      "label": "Thermal Camera"
+    },
+    "daylight": {
+      "url": "rtsp://192.168.1.100:7031/Cam2Stream1",
+      "label": "Daylight Camera"
+    },
+    "swir": {
+      "url": "rtsp://192.168.1.100:7031/Cam3Stream1",
+      "label": "SWIR Camera"
+    }
+  },
+  "ssh": {
+    "username": "silentsentinel",
+    "password": "Sentinel123"
+  },
+  "gimbal": {
+    "pan_range": [-180, 180],
+    "tilt_range": [-90, 90],
+    "command_rate_hz": 20
+  },
+  "ui": {
+    "theme": "dark",
+    "window_title": "MK4 Control System"
+  }
+}
