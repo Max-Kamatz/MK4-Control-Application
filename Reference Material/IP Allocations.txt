@@ -1,0 +1,8 @@
+PT Unit - User Defined
+Daylight - 10.10.10.2
+Thermal - 10.10.10.3
+SWIR - 10.10.10.4
+WL Illuminator - 10.10.10.5
+IR Illuminator - 10.10.10.6
+Speaker - 10.10.10.7
+Sub-Payload - 10.10.10.8

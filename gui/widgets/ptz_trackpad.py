@@ -130,6 +130,13 @@ class PTZControlWidget(QWidget):
     focus_pressed = pyqtSignal(int)     # +1 for far, -1 for near
     focus_released = pyqtSignal()
 
+    # Directional arrow signals (use slider speeds)
+    arrow_up_pressed = pyqtSignal()
+    arrow_down_pressed = pyqtSignal()
+    arrow_left_pressed = pyqtSignal()
+    arrow_right_pressed = pyqtSignal()
+    arrow_released = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.init_ui()
@@ -144,86 +151,20 @@ class PTZControlWidget(QWidget):
         title.setStyleSheet("font-size: 12pt; padding: 5px;")
         main_layout.addWidget(title)
 
-        # Zoom In button (top)
-        self.btn_zoom_in = QPushButton("🔍+ Zoom In")
-        self.btn_zoom_in.setStyleSheet("""
-            QPushButton {
-                background-color: #1a2035;
-                padding: 8px;
-                font-size: 10pt;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #2a3055;
-            }
-            QPushButton:pressed {
-                background-color: #2a82da;
-            }
-        """)
-        self.btn_zoom_in.pressed.connect(lambda: self.zoom_pressed.emit(1))
-        self.btn_zoom_in.released.connect(self.zoom_released.emit)
-        main_layout.addWidget(self.btn_zoom_in)
+        # Top row: Zoom buttons in corners
+        top_row = QHBoxLayout()
+        top_row.setSpacing(5)
 
-        # Middle row: Focus Far + Trackpad + Focus Near
-        middle_row = QHBoxLayout()
-        middle_row.setSpacing(10)
-
-        self.btn_focus_far = QPushButton("🎯\nFar")
-        self.btn_focus_far.setFixedSize(60, 80)
-        self.btn_focus_far.setStyleSheet("""
-            QPushButton {
-                background-color: #1a2035;
-                padding: 5px;
-                font-size: 9pt;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #2a3055;
-            }
-            QPushButton:pressed {
-                background-color: #2a82da;
-            }
-        """)
-        self.btn_focus_far.pressed.connect(lambda: self.focus_pressed.emit(1))
-        self.btn_focus_far.released.connect(self.focus_released.emit)
-
-        self.trackpad = PTZTrackpad()
-        self.trackpad.moved.connect(self.pan_tilt_moved.emit)
-        self.trackpad.released.connect(self.pan_tilt_released.emit)
-
-        self.btn_focus_near = QPushButton("🎯\nNear")
-        self.btn_focus_near.setFixedSize(60, 80)
-        self.btn_focus_near.setStyleSheet("""
-            QPushButton {
-                background-color: #1a2035;
-                padding: 5px;
-                font-size: 9pt;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #2a3055;
-            }
-            QPushButton:pressed {
-                background-color: #2a82da;
-            }
-        """)
-        self.btn_focus_near.pressed.connect(lambda: self.focus_pressed.emit(-1))
-        self.btn_focus_near.released.connect(self.focus_released.emit)
-
-        middle_row.addWidget(self.btn_focus_far)
-        middle_row.addWidget(self.trackpad)
-        middle_row.addWidget(self.btn_focus_near)
-
-        main_layout.addLayout(middle_row)
-
-        # Zoom Out button (bottom)
-        self.btn_zoom_out = QPushButton("🔍- Zoom Out")
+        # Zoom Out button (top left)
+        self.btn_zoom_out = QPushButton("🔍-")
+        self.btn_zoom_out.setFixedSize(50, 40)
         self.btn_zoom_out.setStyleSheet("""
             QPushButton {
                 background-color: #1a2035;
-                padding: 8px;
-                font-size: 10pt;
+                padding: 5px;
+                font-size: 12pt;
                 font-weight: bold;
+                border-radius: 8px;
             }
             QPushButton:hover {
                 background-color: #2a3055;
@@ -234,10 +175,214 @@ class PTZControlWidget(QWidget):
         """)
         self.btn_zoom_out.pressed.connect(lambda: self.zoom_pressed.emit(-1))
         self.btn_zoom_out.released.connect(self.zoom_released.emit)
-        main_layout.addWidget(self.btn_zoom_out)
+        top_row.addWidget(self.btn_zoom_out)
+
+        top_row.addStretch()
+
+        # Zoom In button (top right)
+        self.btn_zoom_in = QPushButton("🔍+")
+        self.btn_zoom_in.setFixedSize(50, 40)
+        self.btn_zoom_in.setStyleSheet("""
+            QPushButton {
+                background-color: #1a2035;
+                padding: 5px;
+                font-size: 12pt;
+                font-weight: bold;
+                border-radius: 8px;
+            }
+            QPushButton:hover {
+                background-color: #2a3055;
+            }
+            QPushButton:pressed {
+                background-color: #2a82da;
+            }
+        """)
+        self.btn_zoom_in.pressed.connect(lambda: self.zoom_pressed.emit(1))
+        self.btn_zoom_in.released.connect(self.zoom_released.emit)
+        top_row.addWidget(self.btn_zoom_in)
+
+        main_layout.addLayout(top_row)
+
+        # Middle row: Trackpad with arrows only (no focus buttons)
+        middle_row = QHBoxLayout()
+        middle_row.setSpacing(10)
+        middle_row.addStretch()
+
+        # Trackpad with directional arrows
+        trackpad_container = QVBoxLayout()
+        trackpad_container.setSpacing(2)
+
+        # Up arrow button
+        self.btn_arrow_up = QPushButton("▲")
+        self.btn_arrow_up.setFixedSize(40, 25)
+        self.btn_arrow_up.setStyleSheet("""
+            QPushButton {
+                background-color: #1a2035;
+                color: #2a82da;
+                font-size: 14pt;
+                font-weight: bold;
+                border: 1px solid #2a82da;
+            }
+            QPushButton:hover {
+                background-color: #2a3055;
+            }
+            QPushButton:pressed {
+                background-color: #2a82da;
+                color: white;
+            }
+        """)
+        self.btn_arrow_up.pressed.connect(self.arrow_up_pressed.emit)
+        self.btn_arrow_up.released.connect(self.arrow_released.emit)
+
+        # Center up button
+        up_layout = QHBoxLayout()
+        up_layout.addStretch()
+        up_layout.addWidget(self.btn_arrow_up)
+        up_layout.addStretch()
+        trackpad_container.addLayout(up_layout)
+
+        # Middle row with left arrow + trackpad + right arrow
+        center_row = QHBoxLayout()
+        center_row.setSpacing(2)
+
+        self.btn_arrow_left = QPushButton("◀")
+        self.btn_arrow_left.setFixedSize(25, 40)
+        self.btn_arrow_left.setStyleSheet("""
+            QPushButton {
+                background-color: #1a2035;
+                color: #2a82da;
+                font-size: 14pt;
+                font-weight: bold;
+                border: 1px solid #2a82da;
+            }
+            QPushButton:hover {
+                background-color: #2a3055;
+            }
+            QPushButton:pressed {
+                background-color: #2a82da;
+                color: white;
+            }
+        """)
+        self.btn_arrow_left.pressed.connect(self.arrow_left_pressed.emit)
+        self.btn_arrow_left.released.connect(self.arrow_released.emit)
+
+        self.trackpad = PTZTrackpad()
+        self.trackpad.moved.connect(self.pan_tilt_moved.emit)
+        self.trackpad.released.connect(self.pan_tilt_released.emit)
+
+        self.btn_arrow_right = QPushButton("▶")
+        self.btn_arrow_right.setFixedSize(25, 40)
+        self.btn_arrow_right.setStyleSheet("""
+            QPushButton {
+                background-color: #1a2035;
+                color: #2a82da;
+                font-size: 14pt;
+                font-weight: bold;
+                border: 1px solid #2a82da;
+            }
+            QPushButton:hover {
+                background-color: #2a3055;
+            }
+            QPushButton:pressed {
+                background-color: #2a82da;
+                color: white;
+            }
+        """)
+        self.btn_arrow_right.pressed.connect(self.arrow_right_pressed.emit)
+        self.btn_arrow_right.released.connect(self.arrow_released.emit)
+
+        center_row.addWidget(self.btn_arrow_left)
+        center_row.addWidget(self.trackpad)
+        center_row.addWidget(self.btn_arrow_right)
+        trackpad_container.addLayout(center_row)
+
+        # Down arrow button
+        self.btn_arrow_down = QPushButton("▼")
+        self.btn_arrow_down.setFixedSize(40, 25)
+        self.btn_arrow_down.setStyleSheet("""
+            QPushButton {
+                background-color: #1a2035;
+                color: #2a82da;
+                font-size: 14pt;
+                font-weight: bold;
+                border: 1px solid #2a82da;
+            }
+            QPushButton:hover {
+                background-color: #2a3055;
+            }
+            QPushButton:pressed {
+                background-color: #2a82da;
+                color: white;
+            }
+        """)
+        self.btn_arrow_down.pressed.connect(self.arrow_down_pressed.emit)
+        self.btn_arrow_down.released.connect(self.arrow_released.emit)
+
+        # Center down button
+        down_layout = QHBoxLayout()
+        down_layout.addStretch()
+        down_layout.addWidget(self.btn_arrow_down)
+        down_layout.addStretch()
+        trackpad_container.addLayout(down_layout)
+
+        middle_row.addLayout(trackpad_container)
+        middle_row.addStretch()
+        main_layout.addLayout(middle_row)
+
+        # Bottom row: Focus buttons in corners
+        bottom_row = QHBoxLayout()
+        bottom_row.setSpacing(5)
+
+        # Focus Near button (bottom left)
+        self.btn_focus_near = QPushButton("🎯 Near")
+        self.btn_focus_near.setFixedSize(70, 40)
+        self.btn_focus_near.setStyleSheet("""
+            QPushButton {
+                background-color: #1a2035;
+                padding: 5px;
+                font-size: 9pt;
+                font-weight: bold;
+                border-radius: 8px;
+            }
+            QPushButton:hover {
+                background-color: #2a3055;
+            }
+            QPushButton:pressed {
+                background-color: #2a82da;
+            }
+        """)
+        self.btn_focus_near.pressed.connect(lambda: self.focus_pressed.emit(-1))
+        self.btn_focus_near.released.connect(self.focus_released.emit)
+        bottom_row.addWidget(self.btn_focus_near)
+
+        bottom_row.addStretch()
+
+        # Focus Far button (bottom right)
+        self.btn_focus_far = QPushButton("🎯 Far")
+        self.btn_focus_far.setFixedSize(70, 40)
+        self.btn_focus_far.setStyleSheet("""
+            QPushButton {
+                background-color: #1a2035;
+                padding: 5px;
+                font-size: 9pt;
+                font-weight: bold;
+                border-radius: 8px;
+            }
+            QPushButton:hover {
+                background-color: #2a3055;
+            }
+            QPushButton:pressed {
+                background-color: #2a82da;
+            }
+        """)
+        self.btn_focus_far.pressed.connect(lambda: self.focus_pressed.emit(1))
+        self.btn_focus_far.released.connect(self.focus_released.emit)
+        bottom_row.addWidget(self.btn_focus_far)
+
+        main_layout.addLayout(bottom_row)
 
         # Instructions
-        instructions = QLabel("Drag on trackpad for pan/tilt\nHold buttons for zoom/focus")
+        instructions = QLabel("Drag trackpad for pan/tilt • Arrows for discrete moves")
         instructions.setAlignment(Qt.AlignmentFlag.AlignCenter)
         instructions.setStyleSheet("font-size: 8pt; color: #888; padding: 5px;")
         main_layout.addWidget(instructions)

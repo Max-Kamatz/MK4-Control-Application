@@ -42,17 +42,13 @@ class NetworkThread(QThread):
     async def _async_run(self):
         while self.running:
             try:
-                if not self.network_manager.connected:
-                    await self.network_manager.connect()
-
-                    if self.network_manager.connected:
-                        asyncio.create_task(self.network_manager.receive_telemetry())
-
-                await asyncio.sleep(5)
+                # Just keep the event loop alive - don't auto-reconnect
+                # Connection is only initiated when user clicks Connect button
+                await asyncio.sleep(1)
 
             except Exception as e:
                 logger.error(f"Error in network thread async loop: {e}")
-                await asyncio.sleep(5)
+                await asyncio.sleep(1)
 
     def _on_telemetry_received(self, telemetry: TelemetryData):
         telemetry_dict = {
@@ -112,39 +108,67 @@ class NetworkThread(QThread):
             except Exception as e:
                 logger.error(f"Error sending stop command: {e}")
 
-    @pyqtSlot(float)
-    def send_zoom(self, zoom_speed: float):
-        """Send zoom command. zoom_speed: -1.0 (out) to +1.0 (in)"""
+    def send_zoom(self, zoom_speed: float, camera: str = "Camera1"):
+        """Send zoom command. zoom_speed: -1.0 (out) to +1.0 (in), camera: Camera1/Camera2/Camera3"""
         if self.loop and self.network_manager:
             future = asyncio.run_coroutine_threadsafe(
-                self.network_manager.send_zoom(zoom_speed),
+                self.network_manager.send_zoom(zoom_speed, camera),
                 self.loop
             )
             try:
                 success = future.result(timeout=1.0)
                 if success:
                     direction = "in" if zoom_speed > 0 else "out"
-                    self.command_sent.emit(f"Zoom {direction}")
-                    logger.debug(f"Sent zoom command: {zoom_speed}")
+                    self.command_sent.emit(f"Zoom {direction} - {camera}")
+                    logger.debug(f"Sent zoom {direction} command for {camera}: {zoom_speed}")
             except Exception as e:
                 logger.error(f"Error sending zoom command: {e}")
 
-    @pyqtSlot(float)
-    def send_focus(self, focus_speed: float):
-        """Send focus command. focus_speed: -1.0 (near) to +1.0 (far)"""
+    def send_focus(self, focus_speed: float, camera: str = "Camera1"):
+        """Send focus command. focus_speed: -1.0 (near) to +1.0 (far), camera: Camera1/Camera2/Camera3"""
         if self.loop and self.network_manager:
             future = asyncio.run_coroutine_threadsafe(
-                self.network_manager.send_focus(focus_speed),
+                self.network_manager.send_focus(focus_speed, camera),
                 self.loop
             )
             try:
                 success = future.result(timeout=1.0)
                 if success:
                     direction = "far" if focus_speed > 0 else "near"
-                    self.command_sent.emit(f"Focus {direction}")
-                    logger.debug(f"Sent focus command: {focus_speed}")
+                    self.command_sent.emit(f"Focus {direction} - {camera}")
+                    logger.debug(f"Sent focus {direction} command for {camera}: {focus_speed}")
             except Exception as e:
                 logger.error(f"Error sending focus command: {e}")
+
+    @pyqtSlot(float)
+    def send_pan_speed(self, speed: float):
+        """Send pan speed command. speed in degrees/second."""
+        if self.loop and self.network_manager:
+            future = asyncio.run_coroutine_threadsafe(
+                self.network_manager.send_pan_speed(speed),
+                self.loop
+            )
+            try:
+                success = future.result(timeout=1.0)
+                if success:
+                    logger.debug(f"Sent pan speed: {speed} °/s")
+            except Exception as e:
+                logger.error(f"Error sending pan speed: {e}")
+
+    @pyqtSlot(float)
+    def send_tilt_speed(self, speed: float):
+        """Send tilt speed command. speed in degrees/second."""
+        if self.loop and self.network_manager:
+            future = asyncio.run_coroutine_threadsafe(
+                self.network_manager.send_tilt_speed(speed),
+                self.loop
+            )
+            try:
+                success = future.result(timeout=1.0)
+                if success:
+                    logger.debug(f"Sent tilt speed: {speed} °/s")
+            except Exception as e:
+                logger.error(f"Error sending tilt speed: {e}")
 
     @pyqtSlot()
     @pyqtSlot(str)
@@ -154,15 +178,18 @@ class NetworkThread(QThread):
             if target_ip:
                 self.network_manager.set_target_ip(target_ip)
 
-            future = asyncio.run_coroutine_threadsafe(
-                self.network_manager.connect(),
-                self.loop
-            )
-            try:
-                future.result(timeout=10.0)
-            except Exception as e:
-                logger.error(f"Error connecting: {e}")
-                self.error_occurred.emit(f"Connection failed: {e}")
+            # Run connection asynchronously without blocking the GUI thread
+            async def connect_and_start_telemetry():
+                try:
+                    success = await self.network_manager.connect()
+                    if success and self.network_manager.connected:
+                        # Start telemetry reception on successful connection
+                        asyncio.create_task(self.network_manager.receive_telemetry())
+                except Exception as e:
+                    logger.error(f"Error connecting: {e}")
+                    self.error_occurred.emit(f"Connection failed: {e}")
+
+            asyncio.run_coroutine_threadsafe(connect_and_start_telemetry(), self.loop)
 
     @pyqtSlot()
     def disconnect_from_system(self):

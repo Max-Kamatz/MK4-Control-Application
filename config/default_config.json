@@ -7,9 +7,10 @@
     "target_ip": "192.168.1.100",
     "tcp_pelco_port": 54000,
     "udp_telemetry_port": 58000,
-    "up_protocol_port": 58004,
+    "up_protocol_port": 34030,
     "connection_timeout": 5,
-    "reconnect_interval": 5
+    "reconnect_interval": 5,
+    "comment": "EUP (External UP Protocol) uses port 34030 per v2.4.7 specification"
   },
   "rtsp_streams": {
     "thermal": {

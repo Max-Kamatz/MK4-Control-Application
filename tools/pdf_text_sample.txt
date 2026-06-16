@@ -1,0 +1,178 @@
+============================================================
+FIRST 5000 CHARACTERS OF EXTRACTED TEXT
+============================================================
+
+External Universal Protocol specification
+v2.4.7
+1 Protocol versions
+2 Overview
+3 Messages format and addressing
+4 EUP messages
+4.1 MotorControl messages
+4.2 Camera module control messages
+4.2.1 Lens control messages
+4.2.2 Camera control messages
+4.2.3 VideoSource control messages
+4.2.4 VideoTracker control messages
+4.2.5 VideoStabiliser control messages
+4.2.6 MotionDetector control messages
+4.2.7 ChangesDetector control messages
+4.2.8 Classification control messages
+4.2.9 DigitalZoom control messages
+4.2.10 ImageFlip control messages
+4.2.11 ColorFilter control messages
+4.2.12 Clahe control messages
+4.2.13 MotionMagnificator control messages
+4.2.14 VideoStream control messages
+4.2.15 Overlay control messages
+4.2.16 Web RTC Overlay control messages
+4.2.17 BadPixelProcessor control messages
+4.3 Companion control messages
+4.4 Lrf control messages
+4.5 Speaker control messages
+4.6 General control messages
+1 / 86
+4.7 ProcedureManager control messages
+4.8 G5Laser control messages
+4.9 PeakBeam control messages
+4.10 ExternalUp control messages
+4.11 PelcoD control messages
+4.12 Combined commands
+5 Example of control program
+6 Example of detection results subscription
+7 JSON based communication
+1 Protocol versions
+Table 1.1 - Protocol versions.
+Release
+Version What's new
+date
+1.0.0 02.02.2024 First version.
+1.1.0 04.02.2024 - Update command list.
+- Update addressing.
+1.2.0 11.02.2024
+- Update command list.
+- Update Camera1(2,3,4) commands list.
+1.2.1 12.02.2024
+- Add general system commands.
+- Update Speaker commands list.
+1.2.2 13.02.2024 - Add response time information.
+- Add subscription mechanism for detection results.
+1.3.0 17.02.2024 - Add JSON-based messages support.
+1.3.1 20.03.2025 - Low latency UDP ports control has been changed.
+1.4.0 02.04.2025 - Add ProcedureManager commands.
+1.4.1 10.06.2025 - Update ProcedureManager commands.
+1.4.2 21.06.2025 - Add new lens commands and camera specific commands.
+1.4.3 23.06.2025 - Add new General commands.
+1.4.4 09.07.2025 - Add combined commands format.
+- Add new General commands.
+1.4.5 15.07.2025
+- Add new MotorControl commands.
+1.4.6 20.07.2025 - Update MotorControl commands.
+1.4.7 04.08.2025 - Update General commands.
+2 / 86
+Release
+Version What's new
+date
+1.4.8 20.08.2025 - Update MotorControl commands.
+1.4.9 20.10.2025 - Add new commands for WebRTC overlay control.
+1.4.10 22.10.2025 - Add new commands for RTP stream control.
+- Message format changed - added obligatory to put '\n' symbol at the
+2.0.0 05.11.2025
+end of command.
+2.0.1 28.11.2025 - Add new commands for RTMP, HLS and SRT servers.
+2.1.0 15.12.2025 - Update command list. Update document structure.
+- Add LaserIlluminator and PeakBeam commands.
+2.2.0 30.01.2026 - Add new functional modules for PelcoD and External UP
+communication.
+- Add new submodule "BadPixelProcessor" for Camera1(2,3,4) functional
+2.3.0 04.02.2026 modules.
+- Extended video tracker commands.
+2.3.1 09.02.2026 - Fixed "General" commands mistakes.
+2.3.2 13.02.2026 - Add new params for VideoStream1/2 control.
+- Removed video streaming commands from "General" section.
+2.4.0 01.03.2026
+- Added new commands to "VideoStream" section.
+2.4.1 06.03.2026 - Updated commands description.
+2.4.2 11.03.2026 - Updated commands description.
+2.4.3 16.03.2026 - Add new MotorControl Homing Delay commands.
+2.4.4 17.03.2026 - Add new Camera commands.
+2.4.5 16.04.2026 - Fixed commands description mistakes.
+2.4.6 17.04.2026 - Fixed MotorControl commands description.
+2.4.7 13.05.2026 - Updated the description of VideoTracker commands.
+2 Overview
+The External Control Universal Protocol (EUP) is designed to allow external systems to control the NexOS
+platform and receive data from it. EUP uses UDP or TCP communication, where NexOS listens on a specific
+UDP / TCP port (port 34030 by default for UDP and 34030 for TCP) and responds to incoming messages.
+Main principles and features:
+1. String-Based Protocol: EUP is a string-based protocol, meaning messages can be read by humans
+without additional preprocessing. WARNING: Each message starts with ID: and ends with end of line
+symbol '\n'.
+3 / 86
+2. Request-Response Principle: The protocol operates on a request-response basis, meaning NexOS
+does not send messages to external users on its own but only responds to incoming messages. The
+NexOS has an option for notification of clients about detection results (detected objects from motion
+detector, changes detector or classification). To receive notifications the client should subscribe to it.
+3. Flexible Message Routing: EUP can route messages to various services based on address,
+supporting different system configurations, such as:
+A single main board with all services
+A main board with separate payload boards for each camera
+A main board with payload boards for multiple cameras
+Configurations including main board, camera payload board, and non-optical payload boards,
+etc.
+4. Supported Message Types:
+Command: Used to trigger actions or modify parameters of any functional mod
+
+============================================================
+SEARCHING FOR 'command' (case-insensitive):
+============================================================
+
+4.12 Combined commands
+1.1.0 04.02.2024 - Update command list.
+- Update command list.
+- Update Camera1(2,3,4) commands list.
+- Add general system commands.
+- Update Speaker commands list.
+1.4.0 02.04.2025 - Add ProcedureManager commands.
+1.4.1 10.06.2025 - Update ProcedureManager commands.
+1.4.2 21.06.2025 - Add new lens commands and camera specific commands.
+1.4.3 23.06.2025 - Add new General commands.
+1.4.4 09.07.2025 - Add combined commands format.
+- Add new General commands.
+- Add new MotorControl commands.
+1.4.6 20.07.2025 - Update MotorControl commands.
+1.4.7 04.08.2025 - Update General commands.
+1.4.8 20.08.2025 - Update MotorControl commands.
+1.4.9 20.10.2025 - Add new commands for WebRTC overlay control.
+1.4.10 22.10.2025 - Add new commands for RTP stream control.
+end of command.
+2.0.1 28.11.2025 - Add new commands for RTMP, HLS and SRT servers.
+2.1.0 15.12.2025 - Update command list. Update document structure.
+- Add LaserIlluminator and PeakBeam commands.
+- Extended video tracker commands.
+2.3.1 09.02.2026 - Fixed "General" commands mistakes.
+- Removed video streaming commands from "General" section.
+- Added new commands to "VideoStream" section.
+2.4.1 06.03.2026 - Updated commands description.
+2.4.2 11.03.2026 - Updated commands description.
+2.4.3 16.03.2026 - Add new MotorControl Homing Delay commands.
+2.4.4 17.03.2026 - Add new Camera commands.
+2.4.5 16.04.2026 - Fixed commands description mistakes.
+2.4.6 17.04.2026 - Fixed MotorControl commands description.
+2.4.7 13.05.2026 - Updated the description of VideoTracker commands.
+Command: Used to trigger actions or modify parameters of any functional module.
+Ack: Sent by NexOS to acknowledge that an action command or parameter change has been
+Nac: Sent by NexOS when a command is invalid or unaccepted.
+<ID:N>/<MessageType>/<Module>/<Submodule (if necessary)>/<Parameter or Action Command>
+is message type key word, one from list: Command, Query, Reply, Ack, Nac.
+specifies the structure, that command or parameter setting refers to. All Submodules can be found in
+is the chosen parameter (with a value following a ':' character) or an action command name with or
+Command
+Sent from NexOS to the Client. Response to a valid Command message, indicating
+the command was executed or accepted.
+Sent from NexOS to the Client. Response to an invalid Command or Query
+Command to move zoom in (tele)
+ID:0/Command/Camera1/Lens/ZoomIn
+Command to set setting profile 2
+ID:1/Command/Camera2/Camera/Profile:2
+Action command to enable video
+ID:3/Command/Camera1/VideoStabiliser/On

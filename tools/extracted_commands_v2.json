@@ -1,0 +1,2923 @@
+{
+  "commands": [
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Lens",
+      "parameter": "ZoomIn",
+      "full_command": "ID:0/Command/Camera1/Lens/ZoomIn",
+      "context": "Command to move zoom in (tele)"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera2",
+      "submodule": "Camera",
+      "parameter": "Profile:2",
+      "full_command": "ID:1/Command/Camera2/Camera/Profile:2",
+      "context": "Command to set setting profile 2"
+    },
+    {
+      "message_type": "Query",
+      "module": "CompanionMain",
+      "submodule": "PowerChannel1Temperature channel of companion board",
+      "parameter": null,
+      "full_command": "ID:2/Query/CompanionMain/PowerChannel1Temperature channel of companion board",
+      "context": "Query temperature of first power"
+    },
+    {
+      "message_type": "Reply",
+      "module": "CompanionMain",
+      "submodule": "PowerChannel1Temperature:50",
+      "parameter": null,
+      "full_command": "ID:2/Reply/CompanionMain/PowerChannel1Temperature:50",
+      "context": "power channel of companion"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "VideoStabiliser",
+      "parameter": "On",
+      "full_command": "ID:3/Command/Camera1/VideoStabiliser/On",
+      "context": "Action command to enable video"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "VideoTracker",
+      "parameter": "Reset",
+      "full_command": "ID:4/Command/Camera1/VideoTracker/Reset",
+      "context": "Action command to reset video"
+    },
+    {
+      "message_type": "Command",
+      "module": "MotorControl",
+      "submodule": "Pan",
+      "parameter": "ToPos:120.5 - go to pan position 120.5 degree.",
+      "full_command": "[client -> system] ID:10/Command/MotorControl/Pan/ToPos:120.5 - go to pan position 120.5 degree.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "MotorControl",
+      "submodule": "Pan",
+      "parameter": "ToPos:500 - go to pan position 500 degree.",
+      "full_command": "[client -> system] ID:11/Command/MotorControl/Pan/ToPos:500 - go to pan position 500 degree.",
+      "context": "[system -> client] ID:10/Ack - command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "MotorControl",
+      "submodule": "Tilt",
+      "parameter": "DownLimit - Query tilt down limit.",
+      "full_command": "[client -> system] ID:12/Query/MotorControl/Tilt/DownLimit - Query tilt down limit.",
+      "context": "[system -> client] ID:11/Nac - command not accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "MotorControl",
+      "submodule": "Tilt",
+      "parameter": "DownLimit:-60.1 - tilt down limit -60 degree.",
+      "full_command": "[system -> client] ID:12/Reply/MotorControl/Tilt/DownLimit:-60.1 - tilt down limit -60 degree.",
+      "context": "[client -> system] ID:12/Query/MotorControl/Tilt/DownLimit - Query tilt down limit."
+    },
+    {
+      "message_type": "Command",
+      "module": "MotorControl",
+      "submodule": "Pan",
+      "parameter": "RightLimit:10.8 - Set right pan limit to 10.8 degree.",
+      "full_command": "[client -> system] ID:13/Command/MotorControl/Pan/RightLimit:10.8 - Set right pan limit to 10.8 degree.",
+      "context": "[system -> client] ID:12/Reply/MotorControl/Tilt/DownLimit:-60.1 - tilt down limit -60 degree."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Lens",
+      "parameter": "ZoomToPos:12000 - Go to zoom position 12000.",
+      "full_command": "[client -> system] ID:14/Command/Camera1/Lens/ZoomToPos:12000 - Go to zoom position 12000.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Lens",
+      "parameter": "AfRoiMode:0 - Set auto focus ROI to auto detection",
+      "full_command": "[client -> system] ID:15/Command/Camera1/Lens/AfRoiMode:0 - Set auto focus ROI to auto detection",
+      "context": "[system -> client] ID:14/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "Lens",
+      "parameter": "FocusPos - Query focus position from camera 2.",
+      "full_command": "[client -> system] ID:16/Query/Camera2/Lens/FocusPos - Query focus position from camera 2.",
+      "context": "[system -> client] ID:15/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "Lens",
+      "parameter": "FocusPos:100 - Focus position from camera 2.",
+      "full_command": "[system -> client] ID:16/Reply/Camera2/Lens/FocusPos:100 - Focus position from camera 2.",
+      "context": "[client -> system] ID:16/Query/Camera2/Lens/FocusPos - Query focus position from camera 2."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera3",
+      "submodule": "Lens",
+      "parameter": "IsAfActive - Query auto focus status.",
+      "full_command": "[client -> system] ID:17/Query/Camera3/Lens/IsAfActive - Query auto focus status.",
+      "context": "[system -> client] ID:16/Reply/Camera2/Lens/FocusPos:100 - Focus position from camera 2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera3",
+      "submodule": "Lens",
+      "parameter": "IsAfActive:0 - Auto focus not active.",
+      "full_command": "[system -> client] ID:17/Reply/Camera3/Lens/IsAfActive:0 - Auto focus not active.",
+      "context": "[client -> system] ID:17/Query/Camera3/Lens/IsAfActive - Query auto focus status."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Reset - Restart Jafar service for camera 1.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:17/Command/Camera1/Reset - Restart Jafar service for camera 1.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Camera",
+      "parameter": "Profile:2 - Set camera settings profile 2.",
+      "full_command": "[client -> system] ID:18/Command/Camera1/Camera/Profile:2 - Set camera settings profile 2.",
+      "context": "[system -> client] ID:17/Ack - command accepted."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Camera",
+      "parameter": "ChangingMode:1 - Set changing mode (day / night)",
+      "full_command": "[client -> system] ID:19/Command/Camera1/Camera/ChangingMode:1 - Set changing mode (day / night)",
+      "context": "[system -> client] ID:18/Ack - command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "Camera",
+      "parameter": "ChangingMode - Query changing mode from camera 2.",
+      "full_command": "[client -> system] ID:20/Query/Camera2/Camera/ChangingMode - Query changing mode from camera 2.",
+      "context": "[system -> client] ID:19/Ack - command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "Camera",
+      "parameter": "ChangingMode:1 - Changing mode is auto.",
+      "full_command": "[system -> client] ID:20/Reply/Camera2/Camera/ChangingMode:1 - Changing mode is auto.",
+      "context": "[client -> system] ID:20/Query/Camera2/Camera/ChangingMode - Query changing mode from camera 2."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera3",
+      "submodule": "Camera",
+      "parameter": "IsConnected - Query connection status.",
+      "full_command": "[client -> system] ID:21/Query/Camera3/Camera/IsConnected - Query connection status.",
+      "context": "23 / 86"
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera3",
+      "submodule": "Camera",
+      "parameter": "IsConnected:1 - Connected.",
+      "full_command": "[system -> client] ID:21/Reply/Camera3/Camera/IsConnected:1 - Connected.",
+      "context": "[client -> system] ID:21/Query/Camera3/Camera/IsConnected - Query connection status."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "VideoSource",
+      "parameter": "Restart - Restart video capture module of",
+      "full_command": "[client -> system] ID:22/Command/Camera1/VideoSource/Restart - Restart video capture module of",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "VideoSource",
+      "parameter": "Custom1:10 - Set custom parameters of",
+      "full_command": "[client -> system] ID:23/Command/Camera1/VideoSource/Custom1:10 - Set custom parameters of",
+      "context": "[system -> client] ID:22/Ack - command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "VideoSource",
+      "parameter": "Width - Query video width from camera 2.",
+      "full_command": "[client -> system] ID:24/Query/Camera2/VideoSource/Width - Query video width from camera 2.",
+      "context": "[system -> client] ID:23/Ack - command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "VideoSource",
+      "parameter": "Width:1920 - Reply about video width of camera 2.",
+      "full_command": "[system -> client] ID:24/Reply/Camera2/VideoSource/Width:1920 - Reply about video width of camera 2.",
+      "context": "24 / 86"
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "VideoSource",
+      "parameter": "Height - Query video height from camera 2.",
+      "full_command": "[client -> system] ID:25/Query/Camera2/VideoSource/Height - Query video height from camera 2.",
+      "context": "[system -> client] ID:24/Reply/Camera2/VideoSource/Width:1920 - Reply about video width of camera 2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "VideoSource",
+      "parameter": "Height:1080 - Reply about video height of camera 2.",
+      "full_command": "[system -> client] ID:25/Reply/Camera2/VideoSource/Height:1080 - Reply about video height of camera 2.",
+      "context": "[client -> system] ID:25/Query/Camera2/VideoSource/Height - Query video height from camera 2."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "VideoTracker",
+      "parameter": "Reset - Reset video tracking on camera 1.",
+      "full_command": "[client -> system] ID:26/Command/Camera1/VideoTracker/Reset - Reset video tracking on camera 1.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "VideoTracker",
+      "parameter": "CapturePercents:20.4x36.7 - Capture object",
+      "full_command": "[client -> system] ID:27/Command/Camera1/VideoTracker/CapturePercents:20.4x36.7 - Capture object",
+      "context": "[system -> client] ID:26/Ack - command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "VideoTracker",
+      "parameter": "Mode - Query video tracker mode from camera 2.",
+      "full_command": "[client -> system] ID:28/Query/Camera2/VideoTracker/Mode - Query video tracker mode from camera 2.",
+      "context": "[system -> client] ID:27/Ack - command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "VideoTracker",
+      "parameter": "Mode:0 - FREE video tracker mode of camera 2.",
+      "full_command": "[system -> client] ID:28/Reply/Camera2/VideoTracker/Mode:0 - FREE video tracker mode of camera 2.",
+      "context": "[client -> system] ID:28/Query/Camera2/VideoTracker/Mode - Query video tracker mode from camera 2."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "VideoTracker",
+      "parameter": "LostModeOption - Query video tracker lost mode",
+      "full_command": "[client -> system] ID:29/Query/Camera2/VideoTracker/LostModeOption - Query video tracker lost mode",
+      "context": "[system -> client] ID:28/Reply/Camera2/VideoTracker/Mode:0 - FREE video tracker mode of camera 2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "VideoTracker",
+      "parameter": "LostModeOption:0 - Lost mode option 0 of camera",
+      "full_command": "[system -> client] ID:29/Reply/Camera2/VideoTracker/LostModeOption:0 - Lost mode option 0 of camera",
+      "context": "option from camera 2."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "VideoStabiliser",
+      "parameter": "Reset - Reset video stabilizer of camera 1.",
+      "full_command": "[client -> system] ID:26/Command/Camera1/VideoStabiliser/Reset - Reset video stabilizer of camera 1.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "VideoStabiliser",
+      "parameter": "TransparentBorderMode:1 - Set",
+      "full_command": "[client -> system] ID:27/Command/Camera1/VideoStabiliser/TransparentBorderMode:1 - Set",
+      "context": "[system -> client] ID:26/Ack - command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "VideoStabiliser",
+      "parameter": "Mode - Query video stabilizer mode from camera",
+      "full_command": "[client -> system] ID:28/Query/Camera2/VideoStabiliser/Mode - Query video stabilizer mode from camera",
+      "context": "[system -> client] ID:27/Ack - command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "VideoStabiliser",
+      "parameter": "Mode:1 - Reply about stabilizer mode of camera",
+      "full_command": "[system -> client] ID:28/Reply/Camera2/VideoStabiliser/Mode:1 - Reply about stabilizer mode of camera",
+      "context": "2."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "VideoStabiliser",
+      "parameter": "ConstXOffset - Query constant horizontal offset",
+      "full_command": "[client -> system] ID:29/Query/Camera2/VideoStabiliser/ConstXOffset - Query constant horizontal offset",
+      "context": "2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "VideoStabiliser",
+      "parameter": "ConstXOffset:0 - Reply about constant horizontal",
+      "full_command": "[system -> client] ID:29/Reply/Camera2/VideoStabiliser/ConstXOffset:0 - Reply about constant horizontal",
+      "context": "from camera 2."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "MotionDetector",
+      "parameter": "Reset - Reset motion detector of camera 1.",
+      "full_command": "[client -> system] ID:30/Command/Camera1/MotionDetector/Reset - Reset motion detector of camera 1.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "MotionDetector",
+      "parameter": "MaxObjectWidth:100 - Set maximum",
+      "full_command": "[client -> system] ID:31/Command/Camera1/MotionDetector/MaxObjectWidth:100 - Set maximum",
+      "context": "[system -> client] ID:30/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "MotionDetector",
+      "parameter": "Mode - Query motion detector mode from",
+      "full_command": "[client -> system] ID:32/Query/Camera2/MotionDetector/Mode - Query motion detector mode from",
+      "context": "[system -> client] ID:31/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "MotionDetector",
+      "parameter": "Mode:1 - Reply about motion detector mode of",
+      "full_command": "[system -> client] ID:32/Reply/Camera2/MotionDetector/Mode:1 - Reply about motion detector mode of",
+      "context": "camera 2."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "MotionDetector",
+      "parameter": "ResetCriteria - Query reset criteria of motion",
+      "full_command": "[client -> system] ID:33/Query/Camera2/MotionDetector/ResetCriteria - Query reset criteria of motion",
+      "context": "camera 2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "MotionDetector",
+      "parameter": "ResetCriteria:5 - Reply about reset criteria from",
+      "full_command": "[system -> client] ID:33/Reply/Camera2/MotionDetector/ResetCriteria:5 - Reply about reset criteria from",
+      "context": "detector from camera 2."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "ChangesDetector",
+      "parameter": "Reset - Reset changes detector of camera",
+      "full_command": "[client -> system] ID:34/Command/Camera1/ChangesDetector/Reset - Reset changes detector of camera",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "ChangesDetector",
+      "parameter": "MaxObjectWidth:100 - Set maximum",
+      "full_command": "[client -> system] ID:35/Command/Camera1/ChangesDetector/MaxObjectWidth:100 - Set maximum",
+      "context": "[system -> client] ID:34/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "ChangesDetector",
+      "parameter": "Mode - Query changes detector mode from",
+      "full_command": "[client -> system] ID:36/Query/Camera2/ChangesDetector/Mode - Query changes detector mode from",
+      "context": "[system -> client] ID:35/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "ChangesDetector",
+      "parameter": "Mode:1 - Reply about changes detector mode",
+      "full_command": "[system -> client] ID:36/Reply/Camera2/ChangesDetector/Mode:1 - Reply about changes detector mode",
+      "context": "camera 2."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "ChangesDetector",
+      "parameter": "ResetCriteria - Query reset criteria of changes",
+      "full_command": "[client -> system] ID:37/Query/Camera2/ChangesDetector/ResetCriteria - Query reset criteria of changes",
+      "context": "of camera 2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "ChangesDetector",
+      "parameter": "ResetCriteria:5 - Reply about reset criteria",
+      "full_command": "[system -> client] ID:37/Reply/Camera2/ChangesDetector/ResetCriteria:5 - Reply about reset criteria",
+      "context": "detector from camera 2."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Classification",
+      "parameter": "Reset - Reset classification of camera 1.",
+      "full_command": "[client -> system] ID:38/Command/Camera1/Classification/Reset - Reset classification of camera 1.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Classification",
+      "parameter": "MaxObjectWidth:100 - Set maximum object",
+      "full_command": "[client -> system] ID:39/Command/Camera1/Classification/MaxObjectWidth:100 - Set maximum object",
+      "context": "[system -> client] ID:38/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "Classification",
+      "parameter": "Mode - Query classification mode from camera 2.",
+      "full_command": "[client -> system] ID:40/Query/Camera2/Classification/Mode - Query classification mode from camera 2.",
+      "context": "[system -> client] ID:39/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "Classification",
+      "parameter": "Mode:1 - Reply about classification mode of camera",
+      "full_command": "[system -> client] ID:40/Reply/Camera2/Classification/Mode:1 - Reply about classification mode of camera",
+      "context": "[client -> system] ID:40/Query/Camera2/Classification/Mode - Query classification mode from camera 2."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "Classification",
+      "parameter": "MinDetectionProbability - Query detection",
+      "full_command": "[client -> system] ID:41/Query/Camera2/Classification/MinDetectionProbability - Query detection",
+      "context": "2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "Classification",
+      "parameter": "MinDetectionProbability:50 - Reply about",
+      "full_command": "[system -> client] ID:41/Reply/Camera2/Classification/MinDetectionProbability:50 - Reply about",
+      "context": "probability threshold of classification from camera 2."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "DigitalZoom",
+      "parameter": "On - Enable digital zoom in camera 1.",
+      "full_command": "[client -> system] ID:42/Command/Camera1/DigitalZoom/On - Enable digital zoom in camera 1.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "DigitalZoom",
+      "parameter": "Level:1.5 - Set digital zoom level for camera 1.",
+      "full_command": "[client -> system] ID:43/Command/Camera1/DigitalZoom/Level:1.5 - Set digital zoom level for camera 1.",
+      "context": "[system -> client] ID:42/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "DigitalZoom",
+      "parameter": "Mode - Query digital zoom mode from camera 2.",
+      "full_command": "[client -> system] ID:44/Query/Camera2/DigitalZoom/Mode - Query digital zoom mode from camera 2.",
+      "context": "[system -> client] ID:43/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "DigitalZoom",
+      "parameter": "Mode:1 - Reply about digital zoom mode of camera",
+      "full_command": "[system -> client] ID:44/Reply/Camera2/DigitalZoom/Mode:1 - Reply about digital zoom mode of camera",
+      "context": "[client -> system] ID:44/Query/Camera2/DigitalZoom/Mode - Query digital zoom mode from camera 2."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "DigitalZoom",
+      "parameter": "Level - Query digital zoom level from camera 2.",
+      "full_command": "[client -> system] ID:45/Query/Camera2/DigitalZoom/Level - Query digital zoom level from camera 2.",
+      "context": "2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "DigitalZoom",
+      "parameter": "Level:1.5 - Reply about digital zoom level from",
+      "full_command": "[system -> client] ID:45/Reply/Camera2/DigitalZoom/Level:1.5 - Reply about digital zoom level from",
+      "context": "[client -> system] ID:45/Query/Camera2/DigitalZoom/Level - Query digital zoom level from camera 2."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "ImageFlip",
+      "parameter": "Mode:1 - Set left-right image flip in camera 1.",
+      "full_command": "[client -> system] ID:46/Command/Camera1/ImageFlip/Mode:1 - Set left-right image flip in camera 1.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "ImageFlip",
+      "parameter": "Mode - Query image flip mode from camera 2.",
+      "full_command": "[client -> system] ID:47/Query/Camera2/ImageFlip/Mode - Query image flip mode from camera 2.",
+      "context": "[system -> client] ID:46/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "ImageFlip",
+      "parameter": "Mode:1 - Reply about image flip mode of camera 2.",
+      "full_command": "[system -> client] ID:47/Reply/Camera2/ImageFlip/Mode:1 - Reply about image flip mode of camera 2.",
+      "context": "[client -> system] ID:47/Query/Camera2/ImageFlip/Mode - Query image flip mode from camera 2."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "ColorFilter",
+      "parameter": "On - Enable color filter in camera 1.",
+      "full_command": "[client -> system] ID:48/Command/Camera1/ColorFilter/On - Enable color filter in camera 1.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "ColorFilter",
+      "parameter": "Palette:1 - Set Inverse palette type in camera 1.",
+      "full_command": "[client -> system] ID:49/Command/Camera1/ColorFilter/Palette:1 - Set Inverse palette type in camera 1.",
+      "context": "[system -> client] ID:48/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "ColorFilter",
+      "parameter": "Mode - Query palette mode from camera 2.",
+      "full_command": "[client -> system] ID:50/Query/Camera2/ColorFilter/Mode - Query palette mode from camera 2.",
+      "context": "[system -> client] ID:49/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "ColorFilter",
+      "parameter": "Mode:1 - Reply about palette mode of camera 2.",
+      "full_command": "[system -> client] ID:50/Reply/Camera2/ColorFilter/Mode:1 - Reply about palette mode of camera 2.",
+      "context": "[client -> system] ID:50/Query/Camera2/ColorFilter/Mode - Query palette mode from camera 2."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "ColorFilter",
+      "parameter": "Palette - Query palette type from camera 2.",
+      "full_command": "[client -> system] ID:51/Query/Camera2/ColorFilter/Palette - Query palette type from camera 2.",
+      "context": "[system -> client] ID:50/Reply/Camera2/ColorFilter/Mode:1 - Reply about palette mode of camera 2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "ColorFilter",
+      "parameter": "Palette:1 - Reply about palette type from camera 2.",
+      "full_command": "[system -> client] ID:51/Reply/Camera2/ColorFilter/Palette:1 - Reply about palette type from camera 2.",
+      "context": "[client -> system] ID:51/Query/Camera2/ColorFilter/Palette - Query palette type from camera 2."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Clahe",
+      "parameter": "On - Enable clahe filter in camera 1.",
+      "full_command": "[client -> system] ID:52/Command/Camera1/Clahe/On - Enable clahe filter in camera 1.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Clahe",
+      "parameter": "Type:1 - Set clahe type in camera 1.",
+      "full_command": "[client -> system] ID:53/Command/Camera1/Clahe/Type:1 - Set clahe type in camera 1.",
+      "context": "[system -> client] ID:52/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "Clahe",
+      "parameter": "Mode - Query clahe mode from camera 2.",
+      "full_command": "[client -> system] ID:54/Query/Camera2/Clahe/Mode - Query clahe mode from camera 2.",
+      "context": "[system -> client] ID:53/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "Clahe",
+      "parameter": "Mode:1 - Reply about clahe mode of camera 2.",
+      "full_command": "[system -> client] ID:54/Reply/Camera2/Clahe/Mode:1 - Reply about clahe mode of camera 2.",
+      "context": "[client -> system] ID:54/Query/Camera2/Clahe/Mode - Query clahe mode from camera 2."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "Clahe",
+      "parameter": "Type - Query clahe type from camera 2.",
+      "full_command": "[client -> system] ID:55/Query/Camera2/Clahe/Type - Query clahe type from camera 2.",
+      "context": "[system -> client] ID:54/Reply/Camera2/Clahe/Mode:1 - Reply about clahe mode of camera 2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "Clahe",
+      "parameter": "Type:1 - Reply about clahe type from camera 2.",
+      "full_command": "[system -> client] ID:55/Reply/Camera2/Clahe/Type:1 - Reply about clahe type from camera 2.",
+      "context": "[client -> system] ID:55/Query/Camera2/Clahe/Type - Query clahe type from camera 2."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "MotionMagnificator",
+      "parameter": "On - Enable motion magnification in",
+      "full_command": "[client -> system] ID:52/Command/Camera1/MotionMagnificator/On - Enable motion magnification in",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "MotionMagnificator",
+      "parameter": "Level:10 - Set motion magnification",
+      "full_command": "[client -> system] ID:53/Command/Camera1/MotionMagnificator/Level:10 - Set motion magnification",
+      "context": "[system -> client] ID:52/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "MotionMagnificator",
+      "parameter": "Mode - Query motion magnification mode",
+      "full_command": "[client -> system] ID:54/Query/Camera2/MotionMagnificator/Mode - Query motion magnification mode",
+      "context": "[system -> client] ID:53/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "MotionMagnificator",
+      "parameter": "Mode:1 - Reply about motion magnification",
+      "full_command": "[system -> client] ID:54/Reply/Camera2/MotionMagnificator/Mode:1 - Reply about motion magnification",
+      "context": "45 / 86"
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "MotionMagnificator",
+      "parameter": "Level - Query motion magnification level",
+      "full_command": "[client -> system] ID:55/Query/Camera2/MotionMagnificator/Level - Query motion magnification level",
+      "context": "mode of camera 2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "MotionMagnificator",
+      "parameter": "Level:10 - Reply about motion magnification",
+      "full_command": "[system -> client] ID:55/Reply/Camera2/MotionMagnificator/Level:10 - Reply about motion magnification",
+      "context": "from camera 2."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "VideoStream1",
+      "parameter": "On - Enable first video server of camera 1.",
+      "full_command": "[client -> system] ID:68/Command/Camera1/VideoStream1/On - Enable first video server of camera 1.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "VideoStream1",
+      "parameter": "RtspMulticastPort:7031 - Set RTSP multicast",
+      "full_command": "[client -> system] ID:69/Command/Camera1/VideoStream1/RtspMulticastPort:7031 - Set RTSP multicast",
+      "context": "[system -> client] ID:68/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera1",
+      "submodule": "VideoStream1",
+      "parameter": "Mode - Query first video server mode of camera 1.",
+      "full_command": "[client -> system] ID:70/Query/Camera1/VideoStream1/Mode - Query first video server mode of camera 1.",
+      "context": "51 / 86"
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera1",
+      "submodule": "VideoStream1",
+      "parameter": "Mode:1 - Reply first video server mode of camera",
+      "full_command": "[system -> client] ID:70/Reply/Camera1/VideoStream1/Mode:1 - Reply first video server mode of camera",
+      "context": "[client -> system] ID:70/Query/Camera1/VideoStream1/Mode - Query first video server mode of camera 1."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera1",
+      "submodule": "VideoStream1",
+      "parameter": "BitrateKbps - Query bitrate of first video server",
+      "full_command": "[client -> system] ID:71/Query/Camera1/VideoStream1/BitrateKbps - Query bitrate of first video server",
+      "context": "1."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera1",
+      "submodule": "VideoStream1",
+      "parameter": "BitrateKbps:5000 - Reply about bitrate of first",
+      "full_command": "[system -> client] ID:71/Reply/Camera1/VideoStream1/BitrateKbps:5000 - Reply about bitrate of first",
+      "context": "mode of camera 1."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Overlay",
+      "parameter": "CrossHairMode:1 - Enable cross hair display for",
+      "full_command": "[client -> system] ID:72/Command/Camera1/Overlay/CrossHairMode:1 - Enable cross hair display for",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Overlay",
+      "parameter": "CrossHairSize:40 - Set cross hair size for camera 1.",
+      "full_command": "[client -> system] ID:73/Command/Camera1/Overlay/CrossHairSize:40 - Set cross hair size for camera 1.",
+      "context": "[system -> client] ID:72/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera1",
+      "submodule": "Overlay",
+      "parameter": "LrfMode - Query laser range finder display mode from",
+      "full_command": "[client -> system] ID:74/Query/Camera1/Overlay/LrfMode - Query laser range finder display mode from",
+      "context": "[system -> client] ID:73/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera1",
+      "submodule": "Overlay",
+      "parameter": "LrfMode:1 - Reply about laser range finder display mode",
+      "full_command": "[system -> client] ID:74/Reply/Camera1/Overlay/LrfMode:1 - Reply about laser range finder display mode",
+      "context": "camera 1."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera1",
+      "submodule": "Overlay",
+      "parameter": "FontSize - Query overlay font size from camera 1.",
+      "full_command": "[client -> system] ID:75/Query/Camera1/Overlay/FontSize - Query overlay font size from camera 1.",
+      "context": "from camera 1."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera1",
+      "submodule": "Overlay",
+      "parameter": "FontSize:60 - Reply about overlay font size from camera",
+      "full_command": "[system -> client] ID:75/Reply/Camera1/Overlay/FontSize:60 - Reply about overlay font size from camera",
+      "context": "[client -> system] ID:75/Query/Camera1/Overlay/FontSize - Query overlay font size from camera 1."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "WebRtcOverlay",
+      "parameter": "CrossHairMode:1 - Enable cross hair display",
+      "full_command": "[client -> system] ID:72/Command/Camera1/WebRtcOverlay/CrossHairMode:1 - Enable cross hair display",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "WebRtcOverlay",
+      "parameter": "CrossHairSize:40 - Set cross hair size for",
+      "full_command": "[client -> system] ID:73/Command/Camera1/WebRtcOverlay/CrossHairSize:40 - Set cross hair size for",
+      "context": "[system -> client] ID:72/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera1",
+      "submodule": "WebRtcOverlay",
+      "parameter": "LrfMode - Query laser range finder display mode",
+      "full_command": "[client -> system] ID:74/Query/Camera1/WebRtcOverlay/LrfMode - Query laser range finder display mode",
+      "context": "[system -> client] ID:73/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera1",
+      "submodule": "WebRtcOverlay",
+      "parameter": "LrfMode:1 - Reply about laser range finder",
+      "full_command": "[system -> client] ID:74/Reply/Camera1/WebRtcOverlay/LrfMode:1 - Reply about laser range finder",
+      "context": "from camera 1."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera1",
+      "submodule": "WebRtcOverlay",
+      "parameter": "FontSize - Query overlay font size from camera",
+      "full_command": "[client -> system] ID:75/Query/Camera1/WebRtcOverlay/FontSize - Query overlay font size from camera",
+      "context": "display mode from camera 1."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera1",
+      "submodule": "WebRtcOverlay",
+      "parameter": "FontSize:60 - Reply about overlay font size from",
+      "full_command": "[system -> client] ID:75/Reply/Camera1/WebRtcOverlay/FontSize:60 - Reply about overlay font size from",
+      "context": "1."
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "BadPixelProcessor",
+      "parameter": "Mode:1 - Enable bad pixel correction.",
+      "full_command": "[client -> system] ID:72/Command/Camera1/BadPixelProcessor/Mode:1 - Enable bad pixel correction.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "BadPixelProcessor",
+      "parameter": "ChangeThreshold:40 - Set change",
+      "full_command": "[client -> system] ID:73/Command/Camera1/BadPixelProcessor/ChangeThreshold:40 - Set change",
+      "context": "[system -> client] ID:72/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera1",
+      "submodule": "BadPixelProcessor",
+      "parameter": "LowThreshold - Query low threshold.",
+      "full_command": "[client -> system] ID:74/Query/Camera1/BadPixelProcessor/LowThreshold - Query low threshold.",
+      "context": "[system -> client] ID:73/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera1",
+      "submodule": "BadPixelProcessor",
+      "parameter": "LowThreshold:20 - Reply about low",
+      "full_command": "[system -> client] ID:74/Reply/Camera1/BadPixelProcessor/LowThreshold:20 - Reply about low",
+      "context": "[client -> system] ID:74/Query/Camera1/BadPixelProcessor/LowThreshold - Query low threshold."
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera1",
+      "submodule": "BadPixelProcessor",
+      "parameter": "HighThreshold - Query high threshold.",
+      "full_command": "[client -> system] ID:75/Query/Camera1/BadPixelProcessor/HighThreshold - Query high threshold.",
+      "context": "threshold."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera1",
+      "submodule": "BadPixelProcessor",
+      "parameter": "HighThreshold:235 - Reply about high",
+      "full_command": "[system -> client] ID:75/Reply/Camera1/BadPixelProcessor/HighThreshold:235 - Reply about high",
+      "context": "[client -> system] ID:75/Query/Camera1/BadPixelProcessor/HighThreshold - Query high threshold."
+    },
+    {
+      "message_type": "Command",
+      "module": "Companion1",
+      "submodule": "WiperMode:1 - Enable wiper in payload board 1.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:56/Command/Companion1/WiperMode:1 - Enable wiper in payload board 1.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Companion1",
+      "submodule": "HeaterMode:1 - Enable heater in payload board 1.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:57/Command/Companion1/HeaterMode:1 - Enable heater in payload board 1.",
+      "context": "[system -> client] ID:56/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Companion2",
+      "submodule": "PowerChannel1Mode - Query power channel 1 mode from",
+      "parameter": null,
+      "full_command": "[client -> system] ID:58/Query/Companion2/PowerChannel1Mode - Query power channel 1 mode from",
+      "context": "[system -> client] ID:57/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Companion2",
+      "submodule": "PowerChannel1Mode:1 - Reply about power channel 1 mode",
+      "parameter": null,
+      "full_command": "[system -> client] ID:58/Reply/Companion2/PowerChannel1Mode:1 - Reply about power channel 1 mode",
+      "context": "payload board 2."
+    },
+    {
+      "message_type": "Query",
+      "module": "CompanionMain",
+      "submodule": "MainTemperature - Query main temperature from main",
+      "parameter": null,
+      "full_command": "[client -> system] ID:59/Query/CompanionMain/MainTemperature - Query main temperature from main",
+      "context": "of payload board 2."
+    },
+    {
+      "message_type": "Reply",
+      "module": "CompanionMain",
+      "submodule": "MainTemperature:56 - Reply about main temperature",
+      "parameter": null,
+      "full_command": "[system -> client] ID:59/Reply/CompanionMain/MainTemperature:56 - Reply about main temperature",
+      "context": "board."
+    },
+    {
+      "message_type": "Command",
+      "module": "Lrf",
+      "submodule": "PointerMode:1 - Enable laser pointer.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:64/Command/Lrf/PointerMode:1 - Enable laser pointer.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Lrf",
+      "submodule": "Measure - Measure distance once.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:65/Command/Lrf/Measure - Measure distance once.",
+      "context": "[system -> client] ID:64/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Lrf",
+      "submodule": "PointerModeTimeoutSec - Query pointer mode timeout.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:66/Query/Lrf/PointerModeTimeoutSec - Query pointer mode timeout.",
+      "context": "[system -> client] ID:65/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Lrf",
+      "submodule": "PointerModeTimeoutSec:10 - Reply about pointer mode timeout.",
+      "parameter": null,
+      "full_command": "[system -> client] ID:66/Reply/Lrf/PointerModeTimeoutSec:10 - Reply about pointer mode timeout.",
+      "context": "[client -> system] ID:66/Query/Lrf/PointerModeTimeoutSec - Query pointer mode timeout."
+    },
+    {
+      "message_type": "Query",
+      "module": "Lrf",
+      "submodule": "Distance - Query measured distance.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:67/Query/Lrf/Distance - Query measured distance.",
+      "context": "[system -> client] ID:66/Reply/Lrf/PointerModeTimeoutSec:10 - Reply about pointer mode timeout."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Lrf",
+      "submodule": "Distance:56 - Reply about measured distance.",
+      "parameter": null,
+      "full_command": "[system -> client] ID:67/Reply/Lrf/Distance:56 - Reply about measured distance.",
+      "context": "[client -> system] ID:67/Query/Lrf/Distance - Query measured distance."
+    },
+    {
+      "message_type": "Command",
+      "module": "Speaker",
+      "submodule": "Play:clip1.mp3 - Play clip1.mp3.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:64/Command/Speaker/Play:clip1.mp3 - Play clip1.mp3.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "Speaker",
+      "submodule": "Stop - Stop playback.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:65/Command/Speaker/Stop - Stop playback.",
+      "context": "[system -> client] ID:64/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "Speaker",
+      "submodule": "Volume - Query playback volume.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:66/Query/Speaker/Volume - Query playback volume.",
+      "context": "[system -> client] ID:65/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "Speaker",
+      "submodule": "Volume:10 - Reply about playback volume (10%).",
+      "parameter": null,
+      "full_command": "[system -> client] ID:66/Reply/Speaker/Volume:10 - Reply about playback volume (10%).",
+      "context": "[client -> system] ID:66/Query/Speaker/Volume - Query playback volume."
+    },
+    {
+      "message_type": "Command",
+      "module": "Speaker",
+      "submodule": "Volume:20 - Set playback volume to 20%.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:67/Command/Speaker/Volume:20 - Set playback volume to 20%.",
+      "context": "[system -> client] ID:66/Reply/Speaker/Volume:10 - Reply about playback volume (10%)."
+    },
+    {
+      "message_type": "Command",
+      "module": "General",
+      "submodule": "SlaveZoomMode:1 - Enable slave zoom mode.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:76/Command/General/SlaveZoomMode:1 - Enable slave zoom mode.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Query",
+      "module": "General",
+      "submodule": "VideoTrackerToken - Query video tracker license token.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:79/Query/General/VideoTrackerToken - Query video tracker license token.",
+      "context": "[system -> client] ID:76/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "General",
+      "submodule": "VideoTrackerToken:C7018FFD1BBE58C96DDD2534FF601FC62A112846FD13C30E5D",
+      "parameter": null,
+      "full_command": "ID:79/Reply/General/VideoTrackerToken:C7018FFD1BBE58C96DDD2534FF601FC62A112846FD13C30E5D",
+      "context": "[system -> client]"
+    },
+    {
+      "message_type": "Command",
+      "module": "ProcedureManager",
+      "submodule": "GoToPreset:2 - Go to preset 2.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:82/Command/ProcedureManager/GoToPreset:2 - Go to preset 2.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "G5Laser",
+      "submodule": "MODE",
+      "parameter": "ARM:ON - Arm the laser.",
+      "full_command": "[client -> system] ID:90/Command/G5Laser/MODE/ARM:ON - Arm the laser.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "G5Laser",
+      "submodule": "MODE",
+      "parameter": "LIGHT:BEAM - Turn on light in BEAM mode.",
+      "full_command": "[client -> system] ID:91/Command/G5Laser/MODE/LIGHT:BEAM - Turn on light in BEAM mode.",
+      "context": "[system -> client] ID:90/Ack - Command accepted."
+    },
+    {
+      "message_type": "Command",
+      "module": "G5Laser",
+      "submodule": "ARM-TIME:30 - Set auto-disarm timeout to 30 seconds.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:92/Command/G5Laser/ARM-TIME:30 - Set auto-disarm timeout to 30 seconds.",
+      "context": "[system -> client] ID:91/Ack - Command accepted."
+    },
+    {
+      "message_type": "Command",
+      "module": "G5Laser",
+      "submodule": "BEAM-TIME:60 - Set beam",
+      "parameter": "strobe auto-off timeout to 60",
+      "full_command": "[client -> system] ID:93/Command/G5Laser/BEAM-TIME:60 - Set beam/strobe auto-off timeout to 60",
+      "context": "[system -> client] ID:92/Ack - Command accepted."
+    },
+    {
+      "message_type": "Command",
+      "module": "G5Laser",
+      "submodule": "STROBE-TIME",
+      "parameter": "ON:100 - Set strobe ON duration to 100 ms.",
+      "full_command": "[client -> system] ID:94/Command/G5Laser/STROBE-TIME/ON:100 - Set strobe ON duration to 100 ms.",
+      "context": "[system -> client] ID:93/Ack - Command accepted."
+    },
+    {
+      "message_type": "Command",
+      "module": "G5Laser",
+      "submodule": "STROBE-TIME",
+      "parameter": "OFF:50 - Set strobe OFF duration to 50 ms.",
+      "full_command": "[client -> system] ID:95/Command/G5Laser/STROBE-TIME/OFF:50 - Set strobe OFF duration to 50 ms.",
+      "context": "[system -> client] ID:94/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "G5Laser",
+      "submodule": "READY - Query device readiness.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:96/Query/G5Laser/READY - Query device readiness.",
+      "context": "[system -> client] ID:95/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "G5Laser",
+      "submodule": "READY:READY - Device is ready.",
+      "parameter": null,
+      "full_command": "[system -> client] ID:96/Reply/G5Laser/READY:READY - Device is ready.",
+      "context": "[client -> system] ID:96/Query/G5Laser/READY - Query device readiness."
+    },
+    {
+      "message_type": "Query",
+      "module": "G5Laser",
+      "submodule": "ARM",
+      "parameter": "STATE - Query arm state.",
+      "full_command": "[client -> system] ID:97/Query/G5Laser/ARM/STATE - Query arm state.",
+      "context": "[system -> client] ID:96/Reply/G5Laser/READY:READY - Device is ready."
+    },
+    {
+      "message_type": "Reply",
+      "module": "G5Laser",
+      "submodule": "ARM",
+      "parameter": "STATE:ON - Laser is armed.",
+      "full_command": "[system -> client] ID:97/Reply/G5Laser/ARM/STATE:ON - Laser is armed.",
+      "context": "[client -> system] ID:97/Query/G5Laser/ARM/STATE - Query arm state."
+    },
+    {
+      "message_type": "Query",
+      "module": "G5Laser",
+      "submodule": "LIGHT",
+      "parameter": "STATE - Query light mode.",
+      "full_command": "[client -> system] ID:98/Query/G5Laser/LIGHT/STATE - Query light mode.",
+      "context": "[system -> client] ID:97/Reply/G5Laser/ARM/STATE:ON - Laser is armed."
+    },
+    {
+      "message_type": "Reply",
+      "module": "G5Laser",
+      "submodule": "LIGHT",
+      "parameter": "STATE:BEAM - Light mode is BEAM.",
+      "full_command": "[system -> client] ID:98/Reply/G5Laser/LIGHT/STATE:BEAM - Light mode is BEAM.",
+      "context": "[client -> system] ID:98/Query/G5Laser/LIGHT/STATE - Query light mode."
+    },
+    {
+      "message_type": "Query",
+      "module": "G5Laser",
+      "submodule": "TEMP",
+      "parameter": "LENS - Query lens temperature.",
+      "full_command": "[client -> system] ID:99/Query/G5Laser/TEMP/LENS - Query lens temperature.",
+      "context": "[system -> client] ID:98/Reply/G5Laser/LIGHT/STATE:BEAM - Light mode is BEAM."
+    },
+    {
+      "message_type": "Reply",
+      "module": "G5Laser",
+      "submodule": "TEMP",
+      "parameter": "LENS:32 - Lens temperature is 32C.",
+      "full_command": "[system -> client] ID:99/Reply/G5Laser/TEMP/LENS:32 - Lens temperature is 32C.",
+      "context": "[client -> system] ID:99/Query/G5Laser/TEMP/LENS - Query lens temperature."
+    },
+    {
+      "message_type": "Command",
+      "module": "PeakBeam",
+      "submodule": "Mode:BEAM - Set operating mode BEAM.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:100/Command/PeakBeam/Mode:BEAM - Set operating mode BEAM.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Command",
+      "module": "PeakBeam",
+      "submodule": "Level:High - Set light intensity to High.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:101/Command/PeakBeam/Level:High - Set light intensity to High.",
+      "context": "[system -> client] ID:100/Ack - Command accepted."
+    },
+    {
+      "message_type": "Command",
+      "module": "PeakBeam",
+      "submodule": "StrobeRate:15 - Set strobe frequency to 15 Hz.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:102/Command/PeakBeam/StrobeRate:15 - Set strobe frequency to 15 Hz.",
+      "context": "[system -> client] ID:101/Ack - Command accepted."
+    },
+    {
+      "message_type": "Command",
+      "module": "PeakBeam",
+      "submodule": "ZoomRate:50 - Set zoom speed to 50%.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:103/Command/PeakBeam/ZoomRate:50 - Set zoom speed to 50%.",
+      "context": "[system -> client] ID:102/Ack - Command accepted."
+    },
+    {
+      "message_type": "Command",
+      "module": "PeakBeam",
+      "submodule": "ToPos:75 - Move zoom to position 75.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:104/Command/PeakBeam/ToPos:75 - Move zoom to position 75.",
+      "context": "[system -> client] ID:103/Ack - Command accepted."
+    },
+    {
+      "message_type": "Command",
+      "module": "PeakBeam",
+      "submodule": "Zoom:In - Start continuous zoom in.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:105/Command/PeakBeam/Zoom:In - Start continuous zoom in.",
+      "context": "[system -> client] ID:104/Ack - Command accepted."
+    },
+    {
+      "message_type": "Command",
+      "module": "PeakBeam",
+      "submodule": "ZoomStop - Stop zoom movement.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:106/Command/PeakBeam/ZoomStop - Stop zoom movement.",
+      "context": "[system -> client] ID:105/Ack - Command accepted."
+    },
+    {
+      "message_type": "Query",
+      "module": "PeakBeam",
+      "submodule": "Mode - Query current mode.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:107/Query/PeakBeam/Mode - Query current mode.",
+      "context": "[system -> client] ID:106/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "PeakBeam",
+      "submodule": "Mode:BEAM - Current mode is BEAM.",
+      "parameter": null,
+      "full_command": "[system -> client] ID:107/Reply/PeakBeam/Mode:BEAM - Current mode is BEAM.",
+      "context": "[client -> system] ID:107/Query/PeakBeam/Mode - Query current mode."
+    },
+    {
+      "message_type": "Query",
+      "module": "PeakBeam",
+      "submodule": "StrobeRate",
+      "parameter": "Hz - Query strobe rate in Hz.",
+      "full_command": "[client -> system] ID:108/Query/PeakBeam/StrobeRate/Hz - Query strobe rate in Hz.",
+      "context": "[system -> client] ID:107/Reply/PeakBeam/Mode:BEAM - Current mode is BEAM."
+    },
+    {
+      "message_type": "Reply",
+      "module": "PeakBeam",
+      "submodule": "StrobeRate",
+      "parameter": "Hz:15 - Strobe rate is 15 Hz.",
+      "full_command": "[system -> client] ID:108/Reply/PeakBeam/StrobeRate/Hz:15 - Strobe rate is 15 Hz.",
+      "context": "[client -> system] ID:108/Query/PeakBeam/StrobeRate/Hz - Query strobe rate in Hz."
+    },
+    {
+      "message_type": "Query",
+      "module": "PeakBeam",
+      "submodule": "Pos - Query zoom position.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:109/Query/PeakBeam/Pos - Query zoom position.",
+      "context": "[system -> client] ID:108/Reply/PeakBeam/StrobeRate/Hz:15 - Strobe rate is 15 Hz."
+    },
+    {
+      "message_type": "Reply",
+      "module": "PeakBeam",
+      "submodule": "Pos:75 - Zoom position is 75.",
+      "parameter": null,
+      "full_command": "[system -> client] ID:109/Reply/PeakBeam/Pos:75 - Zoom position is 75.",
+      "context": "[client -> system] ID:109/Query/PeakBeam/Pos - Query zoom position."
+    },
+    {
+      "message_type": "Query",
+      "module": "PeakBeam",
+      "submodule": "Temperature - Query housing temperature.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:110/Query/PeakBeam/Temperature - Query housing temperature.",
+      "context": "[system -> client] ID:109/Reply/PeakBeam/Pos:75 - Zoom position is 75."
+    },
+    {
+      "message_type": "Reply",
+      "module": "PeakBeam",
+      "submodule": "Temperature:32 - Housing temperature is 32C.",
+      "parameter": null,
+      "full_command": "[system -> client] ID:110/Reply/PeakBeam/Temperature:32 - Housing temperature is 32C.",
+      "context": "[client -> system] ID:110/Query/PeakBeam/Temperature - Query housing temperature."
+    },
+    {
+      "message_type": "Command",
+      "module": "ExternalUp",
+      "submodule": "UdpPort:34020 - Set UDP port to 34020.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:106/Command/ExternalUp/UdpPort:34020 - Set UDP port to 34020.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Query",
+      "module": "ExternalUp",
+      "submodule": "UdpPort - Query UDP port.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:107/Query/ExternalUp/UdpPort - Query UDP port.",
+      "context": "[system -> client] ID:106/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "ExternalUp",
+      "submodule": "UdpPort:34020 - Current UDP port is 34020.",
+      "parameter": null,
+      "full_command": "[system -> client] ID:107/Reply/ExternalUp/UdpPort:34020 - Current UDP port is 34020.",
+      "context": "[client -> system] ID:107/Query/ExternalUp/UdpPort - Query UDP port."
+    },
+    {
+      "message_type": "Query",
+      "module": "ExternalUp",
+      "submodule": "TcpPort - Query TCP port.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:108/Query/ExternalUp/TcpPort - Query TCP port.",
+      "context": "[system -> client] ID:107/Reply/ExternalUp/UdpPort:34020 - Current UDP port is 34020."
+    },
+    {
+      "message_type": "Reply",
+      "module": "ExternalUp",
+      "submodule": "TcpPort:34030 - Current TCP port is 34030.",
+      "parameter": null,
+      "full_command": "[system -> client] ID:108/Reply/ExternalUp/TcpPort:34030 - Current TCP port is 34030.",
+      "context": "[client -> system] ID:108/Query/ExternalUp/TcpPort - Query TCP port."
+    },
+    {
+      "message_type": "Command",
+      "module": "PelcoD",
+      "submodule": "UdpPort:34000 - Set UDP port to 34000.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:106/Command/PelcoD/UdpPort:34000 - Set UDP port to 34000.",
+      "context": "Some example messages:"
+    },
+    {
+      "message_type": "Query",
+      "module": "PelcoD",
+      "submodule": "UdpPort - Query UDP port.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:107/Query/PelcoD/UdpPort - Query UDP port.",
+      "context": "[system -> client] ID:106/Ack - Command accepted."
+    },
+    {
+      "message_type": "Reply",
+      "module": "PelcoD",
+      "submodule": "UdpPort:34000 - Current UDP port is 34000.",
+      "parameter": null,
+      "full_command": "[system -> client] ID:107/Reply/PelcoD/UdpPort:34000 - Current UDP port is 34000.",
+      "context": "[client -> system] ID:107/Query/PelcoD/UdpPort - Query UDP port."
+    },
+    {
+      "message_type": "Query",
+      "module": "PelcoD",
+      "submodule": "TcpPort - Query TCP port.",
+      "parameter": null,
+      "full_command": "[client -> system] ID:108/Query/PelcoD/TcpPort - Query TCP port.",
+      "context": "[system -> client] ID:107/Reply/PelcoD/UdpPort:34000 - Current UDP port is 34000."
+    },
+    {
+      "message_type": "Reply",
+      "module": "PelcoD",
+      "submodule": "TcpPort:34010 - Current TCP port is 34010.",
+      "parameter": null,
+      "full_command": "[system -> client] ID:108/Reply/PelcoD/TcpPort:34010 - Current TCP port is 34010.",
+      "context": "[client -> system] ID:108/Query/PelcoD/TcpPort - Query TCP port."
+    },
+    {
+      "message_type": "Command",
+      "module": "ProcedureManager",
+      "submodule": "GoToPreset:2\\nID:83",
+      "parameter": "Command/Camera1/Lens/ZoomIn\\nID:84/",
+      "full_command": "ID:82/Command/ProcedureManager/GoToPreset:2\\nID:83/Command/Camera1/Lens/ZoomIn\\nID:84/",
+      "context": "multiple commands in one. User need put end of line symbol '\\n' between commands. Example:"
+    },
+    {
+      "message_type": "Command",
+      "module": "ProcedureManager",
+      "submodule": "GoToPreset:2\\nID:83",
+      "parameter": "Command/Camera1/Lens/ZoomIn\\nID:84/",
+      "full_command": "ID:82/Command/ProcedureManager/GoToPreset:2\\nID:83/Command/Camera1/Lens/ZoomIn\\nID:84/",
+      "context": "Client -> system:"
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera1",
+      "submodule": "Lens",
+      "parameter": "FocusPos:10000",
+      "full_command": "ID:84/Reply/Camera1/Lens/FocusPos:10000",
+      "context": "ID:83/Ack"
+    },
+    {
+      "message_type": "Command",
+      "module": "\" + command + \"\\n\";",
+      "submodule": null,
+      "parameter": null,
+      "full_command": "command = \"ID:0/Command/\" + command + \"\\n\";",
+      "context": "cin >> command;"
+    },
+    {
+      "message_type": "Command",
+      "module": "Camera1",
+      "submodule": "Lens",
+      "parameter": "ZoomIn",
+      "full_command": "ID:0/Command/Camera1/Lens/ZoomIn",
+      "context": "UP string-based command (from client to system):"
+    },
+    {
+      "message_type": "Command",
+      "module": "Lrf",
+      "submodule": "MinGateDistance:10",
+      "parameter": null,
+      "full_command": "ID:1/Command/Lrf/MinGateDistance:10",
+      "context": "UP string-based command (from client to system):"
+    },
+    {
+      "message_type": "Query",
+      "module": "Camera2",
+      "submodule": "MotionDetector",
+      "parameter": "Mode",
+      "full_command": "ID:2/Query/Camera2/MotionDetector/Mode",
+      "context": "UP string-based query (from client to system):"
+    },
+    {
+      "message_type": "Reply",
+      "module": "Camera2",
+      "submodule": "MotionDetector",
+      "parameter": "Mode:1",
+      "full_command": "ID:2/Reply/Camera2/MotionDetector/Mode:1",
+      "context": "UP string-based reply (from system to client):"
+    }
+  ],
+  "modules": {
+    "Camera1": [
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Lens",
+        "parameter": "ZoomIn",
+        "full_command": "ID:0/Command/Camera1/Lens/ZoomIn",
+        "context": "Command to move zoom in (tele)"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "VideoStabiliser",
+        "parameter": "On",
+        "full_command": "ID:3/Command/Camera1/VideoStabiliser/On",
+        "context": "Action command to enable video"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "VideoTracker",
+        "parameter": "Reset",
+        "full_command": "ID:4/Command/Camera1/VideoTracker/Reset",
+        "context": "Action command to reset video"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Lens",
+        "parameter": "ZoomToPos:12000 - Go to zoom position 12000.",
+        "full_command": "[client -> system] ID:14/Command/Camera1/Lens/ZoomToPos:12000 - Go to zoom position 12000.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Lens",
+        "parameter": "AfRoiMode:0 - Set auto focus ROI to auto detection",
+        "full_command": "[client -> system] ID:15/Command/Camera1/Lens/AfRoiMode:0 - Set auto focus ROI to auto detection",
+        "context": "[system -> client] ID:14/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Reset - Restart Jafar service for camera 1.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:17/Command/Camera1/Reset - Restart Jafar service for camera 1.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Camera",
+        "parameter": "Profile:2 - Set camera settings profile 2.",
+        "full_command": "[client -> system] ID:18/Command/Camera1/Camera/Profile:2 - Set camera settings profile 2.",
+        "context": "[system -> client] ID:17/Ack - command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Camera",
+        "parameter": "ChangingMode:1 - Set changing mode (day / night)",
+        "full_command": "[client -> system] ID:19/Command/Camera1/Camera/ChangingMode:1 - Set changing mode (day / night)",
+        "context": "[system -> client] ID:18/Ack - command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "VideoSource",
+        "parameter": "Restart - Restart video capture module of",
+        "full_command": "[client -> system] ID:22/Command/Camera1/VideoSource/Restart - Restart video capture module of",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "VideoSource",
+        "parameter": "Custom1:10 - Set custom parameters of",
+        "full_command": "[client -> system] ID:23/Command/Camera1/VideoSource/Custom1:10 - Set custom parameters of",
+        "context": "[system -> client] ID:22/Ack - command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "VideoTracker",
+        "parameter": "Reset - Reset video tracking on camera 1.",
+        "full_command": "[client -> system] ID:26/Command/Camera1/VideoTracker/Reset - Reset video tracking on camera 1.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "VideoTracker",
+        "parameter": "CapturePercents:20.4x36.7 - Capture object",
+        "full_command": "[client -> system] ID:27/Command/Camera1/VideoTracker/CapturePercents:20.4x36.7 - Capture object",
+        "context": "[system -> client] ID:26/Ack - command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "VideoStabiliser",
+        "parameter": "Reset - Reset video stabilizer of camera 1.",
+        "full_command": "[client -> system] ID:26/Command/Camera1/VideoStabiliser/Reset - Reset video stabilizer of camera 1.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "VideoStabiliser",
+        "parameter": "TransparentBorderMode:1 - Set",
+        "full_command": "[client -> system] ID:27/Command/Camera1/VideoStabiliser/TransparentBorderMode:1 - Set",
+        "context": "[system -> client] ID:26/Ack - command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "MotionDetector",
+        "parameter": "Reset - Reset motion detector of camera 1.",
+        "full_command": "[client -> system] ID:30/Command/Camera1/MotionDetector/Reset - Reset motion detector of camera 1.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "MotionDetector",
+        "parameter": "MaxObjectWidth:100 - Set maximum",
+        "full_command": "[client -> system] ID:31/Command/Camera1/MotionDetector/MaxObjectWidth:100 - Set maximum",
+        "context": "[system -> client] ID:30/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "ChangesDetector",
+        "parameter": "Reset - Reset changes detector of camera",
+        "full_command": "[client -> system] ID:34/Command/Camera1/ChangesDetector/Reset - Reset changes detector of camera",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "ChangesDetector",
+        "parameter": "MaxObjectWidth:100 - Set maximum",
+        "full_command": "[client -> system] ID:35/Command/Camera1/ChangesDetector/MaxObjectWidth:100 - Set maximum",
+        "context": "[system -> client] ID:34/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Classification",
+        "parameter": "Reset - Reset classification of camera 1.",
+        "full_command": "[client -> system] ID:38/Command/Camera1/Classification/Reset - Reset classification of camera 1.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Classification",
+        "parameter": "MaxObjectWidth:100 - Set maximum object",
+        "full_command": "[client -> system] ID:39/Command/Camera1/Classification/MaxObjectWidth:100 - Set maximum object",
+        "context": "[system -> client] ID:38/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "DigitalZoom",
+        "parameter": "On - Enable digital zoom in camera 1.",
+        "full_command": "[client -> system] ID:42/Command/Camera1/DigitalZoom/On - Enable digital zoom in camera 1.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "DigitalZoom",
+        "parameter": "Level:1.5 - Set digital zoom level for camera 1.",
+        "full_command": "[client -> system] ID:43/Command/Camera1/DigitalZoom/Level:1.5 - Set digital zoom level for camera 1.",
+        "context": "[system -> client] ID:42/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "ImageFlip",
+        "parameter": "Mode:1 - Set left-right image flip in camera 1.",
+        "full_command": "[client -> system] ID:46/Command/Camera1/ImageFlip/Mode:1 - Set left-right image flip in camera 1.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "ColorFilter",
+        "parameter": "On - Enable color filter in camera 1.",
+        "full_command": "[client -> system] ID:48/Command/Camera1/ColorFilter/On - Enable color filter in camera 1.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "ColorFilter",
+        "parameter": "Palette:1 - Set Inverse palette type in camera 1.",
+        "full_command": "[client -> system] ID:49/Command/Camera1/ColorFilter/Palette:1 - Set Inverse palette type in camera 1.",
+        "context": "[system -> client] ID:48/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Clahe",
+        "parameter": "On - Enable clahe filter in camera 1.",
+        "full_command": "[client -> system] ID:52/Command/Camera1/Clahe/On - Enable clahe filter in camera 1.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Clahe",
+        "parameter": "Type:1 - Set clahe type in camera 1.",
+        "full_command": "[client -> system] ID:53/Command/Camera1/Clahe/Type:1 - Set clahe type in camera 1.",
+        "context": "[system -> client] ID:52/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "MotionMagnificator",
+        "parameter": "On - Enable motion magnification in",
+        "full_command": "[client -> system] ID:52/Command/Camera1/MotionMagnificator/On - Enable motion magnification in",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "MotionMagnificator",
+        "parameter": "Level:10 - Set motion magnification",
+        "full_command": "[client -> system] ID:53/Command/Camera1/MotionMagnificator/Level:10 - Set motion magnification",
+        "context": "[system -> client] ID:52/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "VideoStream1",
+        "parameter": "On - Enable first video server of camera 1.",
+        "full_command": "[client -> system] ID:68/Command/Camera1/VideoStream1/On - Enable first video server of camera 1.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "VideoStream1",
+        "parameter": "RtspMulticastPort:7031 - Set RTSP multicast",
+        "full_command": "[client -> system] ID:69/Command/Camera1/VideoStream1/RtspMulticastPort:7031 - Set RTSP multicast",
+        "context": "[system -> client] ID:68/Ack - Command accepted."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera1",
+        "submodule": "VideoStream1",
+        "parameter": "Mode - Query first video server mode of camera 1.",
+        "full_command": "[client -> system] ID:70/Query/Camera1/VideoStream1/Mode - Query first video server mode of camera 1.",
+        "context": "51 / 86"
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera1",
+        "submodule": "VideoStream1",
+        "parameter": "Mode:1 - Reply first video server mode of camera",
+        "full_command": "[system -> client] ID:70/Reply/Camera1/VideoStream1/Mode:1 - Reply first video server mode of camera",
+        "context": "[client -> system] ID:70/Query/Camera1/VideoStream1/Mode - Query first video server mode of camera 1."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera1",
+        "submodule": "VideoStream1",
+        "parameter": "BitrateKbps - Query bitrate of first video server",
+        "full_command": "[client -> system] ID:71/Query/Camera1/VideoStream1/BitrateKbps - Query bitrate of first video server",
+        "context": "1."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera1",
+        "submodule": "VideoStream1",
+        "parameter": "BitrateKbps:5000 - Reply about bitrate of first",
+        "full_command": "[system -> client] ID:71/Reply/Camera1/VideoStream1/BitrateKbps:5000 - Reply about bitrate of first",
+        "context": "mode of camera 1."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Overlay",
+        "parameter": "CrossHairMode:1 - Enable cross hair display for",
+        "full_command": "[client -> system] ID:72/Command/Camera1/Overlay/CrossHairMode:1 - Enable cross hair display for",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Overlay",
+        "parameter": "CrossHairSize:40 - Set cross hair size for camera 1.",
+        "full_command": "[client -> system] ID:73/Command/Camera1/Overlay/CrossHairSize:40 - Set cross hair size for camera 1.",
+        "context": "[system -> client] ID:72/Ack - Command accepted."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera1",
+        "submodule": "Overlay",
+        "parameter": "LrfMode - Query laser range finder display mode from",
+        "full_command": "[client -> system] ID:74/Query/Camera1/Overlay/LrfMode - Query laser range finder display mode from",
+        "context": "[system -> client] ID:73/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera1",
+        "submodule": "Overlay",
+        "parameter": "LrfMode:1 - Reply about laser range finder display mode",
+        "full_command": "[system -> client] ID:74/Reply/Camera1/Overlay/LrfMode:1 - Reply about laser range finder display mode",
+        "context": "camera 1."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera1",
+        "submodule": "Overlay",
+        "parameter": "FontSize - Query overlay font size from camera 1.",
+        "full_command": "[client -> system] ID:75/Query/Camera1/Overlay/FontSize - Query overlay font size from camera 1.",
+        "context": "from camera 1."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera1",
+        "submodule": "Overlay",
+        "parameter": "FontSize:60 - Reply about overlay font size from camera",
+        "full_command": "[system -> client] ID:75/Reply/Camera1/Overlay/FontSize:60 - Reply about overlay font size from camera",
+        "context": "[client -> system] ID:75/Query/Camera1/Overlay/FontSize - Query overlay font size from camera 1."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "WebRtcOverlay",
+        "parameter": "CrossHairMode:1 - Enable cross hair display",
+        "full_command": "[client -> system] ID:72/Command/Camera1/WebRtcOverlay/CrossHairMode:1 - Enable cross hair display",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "WebRtcOverlay",
+        "parameter": "CrossHairSize:40 - Set cross hair size for",
+        "full_command": "[client -> system] ID:73/Command/Camera1/WebRtcOverlay/CrossHairSize:40 - Set cross hair size for",
+        "context": "[system -> client] ID:72/Ack - Command accepted."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera1",
+        "submodule": "WebRtcOverlay",
+        "parameter": "LrfMode - Query laser range finder display mode",
+        "full_command": "[client -> system] ID:74/Query/Camera1/WebRtcOverlay/LrfMode - Query laser range finder display mode",
+        "context": "[system -> client] ID:73/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera1",
+        "submodule": "WebRtcOverlay",
+        "parameter": "LrfMode:1 - Reply about laser range finder",
+        "full_command": "[system -> client] ID:74/Reply/Camera1/WebRtcOverlay/LrfMode:1 - Reply about laser range finder",
+        "context": "from camera 1."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera1",
+        "submodule": "WebRtcOverlay",
+        "parameter": "FontSize - Query overlay font size from camera",
+        "full_command": "[client -> system] ID:75/Query/Camera1/WebRtcOverlay/FontSize - Query overlay font size from camera",
+        "context": "display mode from camera 1."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera1",
+        "submodule": "WebRtcOverlay",
+        "parameter": "FontSize:60 - Reply about overlay font size from",
+        "full_command": "[system -> client] ID:75/Reply/Camera1/WebRtcOverlay/FontSize:60 - Reply about overlay font size from",
+        "context": "1."
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "BadPixelProcessor",
+        "parameter": "Mode:1 - Enable bad pixel correction.",
+        "full_command": "[client -> system] ID:72/Command/Camera1/BadPixelProcessor/Mode:1 - Enable bad pixel correction.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "BadPixelProcessor",
+        "parameter": "ChangeThreshold:40 - Set change",
+        "full_command": "[client -> system] ID:73/Command/Camera1/BadPixelProcessor/ChangeThreshold:40 - Set change",
+        "context": "[system -> client] ID:72/Ack - Command accepted."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera1",
+        "submodule": "BadPixelProcessor",
+        "parameter": "LowThreshold - Query low threshold.",
+        "full_command": "[client -> system] ID:74/Query/Camera1/BadPixelProcessor/LowThreshold - Query low threshold.",
+        "context": "[system -> client] ID:73/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera1",
+        "submodule": "BadPixelProcessor",
+        "parameter": "LowThreshold:20 - Reply about low",
+        "full_command": "[system -> client] ID:74/Reply/Camera1/BadPixelProcessor/LowThreshold:20 - Reply about low",
+        "context": "[client -> system] ID:74/Query/Camera1/BadPixelProcessor/LowThreshold - Query low threshold."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera1",
+        "submodule": "BadPixelProcessor",
+        "parameter": "HighThreshold - Query high threshold.",
+        "full_command": "[client -> system] ID:75/Query/Camera1/BadPixelProcessor/HighThreshold - Query high threshold.",
+        "context": "threshold."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera1",
+        "submodule": "BadPixelProcessor",
+        "parameter": "HighThreshold:235 - Reply about high",
+        "full_command": "[system -> client] ID:75/Reply/Camera1/BadPixelProcessor/HighThreshold:235 - Reply about high",
+        "context": "[client -> system] ID:75/Query/Camera1/BadPixelProcessor/HighThreshold - Query high threshold."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera1",
+        "submodule": "Lens",
+        "parameter": "FocusPos:10000",
+        "full_command": "ID:84/Reply/Camera1/Lens/FocusPos:10000",
+        "context": "ID:83/Ack"
+      },
+      {
+        "message_type": "Command",
+        "module": "Camera1",
+        "submodule": "Lens",
+        "parameter": "ZoomIn",
+        "full_command": "ID:0/Command/Camera1/Lens/ZoomIn",
+        "context": "UP string-based command (from client to system):"
+      }
+    ],
+    "Camera2": [
+      {
+        "message_type": "Command",
+        "module": "Camera2",
+        "submodule": "Camera",
+        "parameter": "Profile:2",
+        "full_command": "ID:1/Command/Camera2/Camera/Profile:2",
+        "context": "Command to set setting profile 2"
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "Lens",
+        "parameter": "FocusPos - Query focus position from camera 2.",
+        "full_command": "[client -> system] ID:16/Query/Camera2/Lens/FocusPos - Query focus position from camera 2.",
+        "context": "[system -> client] ID:15/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "Lens",
+        "parameter": "FocusPos:100 - Focus position from camera 2.",
+        "full_command": "[system -> client] ID:16/Reply/Camera2/Lens/FocusPos:100 - Focus position from camera 2.",
+        "context": "[client -> system] ID:16/Query/Camera2/Lens/FocusPos - Query focus position from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "Camera",
+        "parameter": "ChangingMode - Query changing mode from camera 2.",
+        "full_command": "[client -> system] ID:20/Query/Camera2/Camera/ChangingMode - Query changing mode from camera 2.",
+        "context": "[system -> client] ID:19/Ack - command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "Camera",
+        "parameter": "ChangingMode:1 - Changing mode is auto.",
+        "full_command": "[system -> client] ID:20/Reply/Camera2/Camera/ChangingMode:1 - Changing mode is auto.",
+        "context": "[client -> system] ID:20/Query/Camera2/Camera/ChangingMode - Query changing mode from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "VideoSource",
+        "parameter": "Width - Query video width from camera 2.",
+        "full_command": "[client -> system] ID:24/Query/Camera2/VideoSource/Width - Query video width from camera 2.",
+        "context": "[system -> client] ID:23/Ack - command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "VideoSource",
+        "parameter": "Width:1920 - Reply about video width of camera 2.",
+        "full_command": "[system -> client] ID:24/Reply/Camera2/VideoSource/Width:1920 - Reply about video width of camera 2.",
+        "context": "24 / 86"
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "VideoSource",
+        "parameter": "Height - Query video height from camera 2.",
+        "full_command": "[client -> system] ID:25/Query/Camera2/VideoSource/Height - Query video height from camera 2.",
+        "context": "[system -> client] ID:24/Reply/Camera2/VideoSource/Width:1920 - Reply about video width of camera 2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "VideoSource",
+        "parameter": "Height:1080 - Reply about video height of camera 2.",
+        "full_command": "[system -> client] ID:25/Reply/Camera2/VideoSource/Height:1080 - Reply about video height of camera 2.",
+        "context": "[client -> system] ID:25/Query/Camera2/VideoSource/Height - Query video height from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "VideoTracker",
+        "parameter": "Mode - Query video tracker mode from camera 2.",
+        "full_command": "[client -> system] ID:28/Query/Camera2/VideoTracker/Mode - Query video tracker mode from camera 2.",
+        "context": "[system -> client] ID:27/Ack - command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "VideoTracker",
+        "parameter": "Mode:0 - FREE video tracker mode of camera 2.",
+        "full_command": "[system -> client] ID:28/Reply/Camera2/VideoTracker/Mode:0 - FREE video tracker mode of camera 2.",
+        "context": "[client -> system] ID:28/Query/Camera2/VideoTracker/Mode - Query video tracker mode from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "VideoTracker",
+        "parameter": "LostModeOption - Query video tracker lost mode",
+        "full_command": "[client -> system] ID:29/Query/Camera2/VideoTracker/LostModeOption - Query video tracker lost mode",
+        "context": "[system -> client] ID:28/Reply/Camera2/VideoTracker/Mode:0 - FREE video tracker mode of camera 2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "VideoTracker",
+        "parameter": "LostModeOption:0 - Lost mode option 0 of camera",
+        "full_command": "[system -> client] ID:29/Reply/Camera2/VideoTracker/LostModeOption:0 - Lost mode option 0 of camera",
+        "context": "option from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "VideoStabiliser",
+        "parameter": "Mode - Query video stabilizer mode from camera",
+        "full_command": "[client -> system] ID:28/Query/Camera2/VideoStabiliser/Mode - Query video stabilizer mode from camera",
+        "context": "[system -> client] ID:27/Ack - command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "VideoStabiliser",
+        "parameter": "Mode:1 - Reply about stabilizer mode of camera",
+        "full_command": "[system -> client] ID:28/Reply/Camera2/VideoStabiliser/Mode:1 - Reply about stabilizer mode of camera",
+        "context": "2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "VideoStabiliser",
+        "parameter": "ConstXOffset - Query constant horizontal offset",
+        "full_command": "[client -> system] ID:29/Query/Camera2/VideoStabiliser/ConstXOffset - Query constant horizontal offset",
+        "context": "2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "VideoStabiliser",
+        "parameter": "ConstXOffset:0 - Reply about constant horizontal",
+        "full_command": "[system -> client] ID:29/Reply/Camera2/VideoStabiliser/ConstXOffset:0 - Reply about constant horizontal",
+        "context": "from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "MotionDetector",
+        "parameter": "Mode - Query motion detector mode from",
+        "full_command": "[client -> system] ID:32/Query/Camera2/MotionDetector/Mode - Query motion detector mode from",
+        "context": "[system -> client] ID:31/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "MotionDetector",
+        "parameter": "Mode:1 - Reply about motion detector mode of",
+        "full_command": "[system -> client] ID:32/Reply/Camera2/MotionDetector/Mode:1 - Reply about motion detector mode of",
+        "context": "camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "MotionDetector",
+        "parameter": "ResetCriteria - Query reset criteria of motion",
+        "full_command": "[client -> system] ID:33/Query/Camera2/MotionDetector/ResetCriteria - Query reset criteria of motion",
+        "context": "camera 2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "MotionDetector",
+        "parameter": "ResetCriteria:5 - Reply about reset criteria from",
+        "full_command": "[system -> client] ID:33/Reply/Camera2/MotionDetector/ResetCriteria:5 - Reply about reset criteria from",
+        "context": "detector from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "ChangesDetector",
+        "parameter": "Mode - Query changes detector mode from",
+        "full_command": "[client -> system] ID:36/Query/Camera2/ChangesDetector/Mode - Query changes detector mode from",
+        "context": "[system -> client] ID:35/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "ChangesDetector",
+        "parameter": "Mode:1 - Reply about changes detector mode",
+        "full_command": "[system -> client] ID:36/Reply/Camera2/ChangesDetector/Mode:1 - Reply about changes detector mode",
+        "context": "camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "ChangesDetector",
+        "parameter": "ResetCriteria - Query reset criteria of changes",
+        "full_command": "[client -> system] ID:37/Query/Camera2/ChangesDetector/ResetCriteria - Query reset criteria of changes",
+        "context": "of camera 2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "ChangesDetector",
+        "parameter": "ResetCriteria:5 - Reply about reset criteria",
+        "full_command": "[system -> client] ID:37/Reply/Camera2/ChangesDetector/ResetCriteria:5 - Reply about reset criteria",
+        "context": "detector from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "Classification",
+        "parameter": "Mode - Query classification mode from camera 2.",
+        "full_command": "[client -> system] ID:40/Query/Camera2/Classification/Mode - Query classification mode from camera 2.",
+        "context": "[system -> client] ID:39/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "Classification",
+        "parameter": "Mode:1 - Reply about classification mode of camera",
+        "full_command": "[system -> client] ID:40/Reply/Camera2/Classification/Mode:1 - Reply about classification mode of camera",
+        "context": "[client -> system] ID:40/Query/Camera2/Classification/Mode - Query classification mode from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "Classification",
+        "parameter": "MinDetectionProbability - Query detection",
+        "full_command": "[client -> system] ID:41/Query/Camera2/Classification/MinDetectionProbability - Query detection",
+        "context": "2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "Classification",
+        "parameter": "MinDetectionProbability:50 - Reply about",
+        "full_command": "[system -> client] ID:41/Reply/Camera2/Classification/MinDetectionProbability:50 - Reply about",
+        "context": "probability threshold of classification from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "DigitalZoom",
+        "parameter": "Mode - Query digital zoom mode from camera 2.",
+        "full_command": "[client -> system] ID:44/Query/Camera2/DigitalZoom/Mode - Query digital zoom mode from camera 2.",
+        "context": "[system -> client] ID:43/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "DigitalZoom",
+        "parameter": "Mode:1 - Reply about digital zoom mode of camera",
+        "full_command": "[system -> client] ID:44/Reply/Camera2/DigitalZoom/Mode:1 - Reply about digital zoom mode of camera",
+        "context": "[client -> system] ID:44/Query/Camera2/DigitalZoom/Mode - Query digital zoom mode from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "DigitalZoom",
+        "parameter": "Level - Query digital zoom level from camera 2.",
+        "full_command": "[client -> system] ID:45/Query/Camera2/DigitalZoom/Level - Query digital zoom level from camera 2.",
+        "context": "2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "DigitalZoom",
+        "parameter": "Level:1.5 - Reply about digital zoom level from",
+        "full_command": "[system -> client] ID:45/Reply/Camera2/DigitalZoom/Level:1.5 - Reply about digital zoom level from",
+        "context": "[client -> system] ID:45/Query/Camera2/DigitalZoom/Level - Query digital zoom level from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "ImageFlip",
+        "parameter": "Mode - Query image flip mode from camera 2.",
+        "full_command": "[client -> system] ID:47/Query/Camera2/ImageFlip/Mode - Query image flip mode from camera 2.",
+        "context": "[system -> client] ID:46/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "ImageFlip",
+        "parameter": "Mode:1 - Reply about image flip mode of camera 2.",
+        "full_command": "[system -> client] ID:47/Reply/Camera2/ImageFlip/Mode:1 - Reply about image flip mode of camera 2.",
+        "context": "[client -> system] ID:47/Query/Camera2/ImageFlip/Mode - Query image flip mode from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "ColorFilter",
+        "parameter": "Mode - Query palette mode from camera 2.",
+        "full_command": "[client -> system] ID:50/Query/Camera2/ColorFilter/Mode - Query palette mode from camera 2.",
+        "context": "[system -> client] ID:49/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "ColorFilter",
+        "parameter": "Mode:1 - Reply about palette mode of camera 2.",
+        "full_command": "[system -> client] ID:50/Reply/Camera2/ColorFilter/Mode:1 - Reply about palette mode of camera 2.",
+        "context": "[client -> system] ID:50/Query/Camera2/ColorFilter/Mode - Query palette mode from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "ColorFilter",
+        "parameter": "Palette - Query palette type from camera 2.",
+        "full_command": "[client -> system] ID:51/Query/Camera2/ColorFilter/Palette - Query palette type from camera 2.",
+        "context": "[system -> client] ID:50/Reply/Camera2/ColorFilter/Mode:1 - Reply about palette mode of camera 2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "ColorFilter",
+        "parameter": "Palette:1 - Reply about palette type from camera 2.",
+        "full_command": "[system -> client] ID:51/Reply/Camera2/ColorFilter/Palette:1 - Reply about palette type from camera 2.",
+        "context": "[client -> system] ID:51/Query/Camera2/ColorFilter/Palette - Query palette type from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "Clahe",
+        "parameter": "Mode - Query clahe mode from camera 2.",
+        "full_command": "[client -> system] ID:54/Query/Camera2/Clahe/Mode - Query clahe mode from camera 2.",
+        "context": "[system -> client] ID:53/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "Clahe",
+        "parameter": "Mode:1 - Reply about clahe mode of camera 2.",
+        "full_command": "[system -> client] ID:54/Reply/Camera2/Clahe/Mode:1 - Reply about clahe mode of camera 2.",
+        "context": "[client -> system] ID:54/Query/Camera2/Clahe/Mode - Query clahe mode from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "Clahe",
+        "parameter": "Type - Query clahe type from camera 2.",
+        "full_command": "[client -> system] ID:55/Query/Camera2/Clahe/Type - Query clahe type from camera 2.",
+        "context": "[system -> client] ID:54/Reply/Camera2/Clahe/Mode:1 - Reply about clahe mode of camera 2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "Clahe",
+        "parameter": "Type:1 - Reply about clahe type from camera 2.",
+        "full_command": "[system -> client] ID:55/Reply/Camera2/Clahe/Type:1 - Reply about clahe type from camera 2.",
+        "context": "[client -> system] ID:55/Query/Camera2/Clahe/Type - Query clahe type from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "MotionMagnificator",
+        "parameter": "Mode - Query motion magnification mode",
+        "full_command": "[client -> system] ID:54/Query/Camera2/MotionMagnificator/Mode - Query motion magnification mode",
+        "context": "[system -> client] ID:53/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "MotionMagnificator",
+        "parameter": "Mode:1 - Reply about motion magnification",
+        "full_command": "[system -> client] ID:54/Reply/Camera2/MotionMagnificator/Mode:1 - Reply about motion magnification",
+        "context": "45 / 86"
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "MotionMagnificator",
+        "parameter": "Level - Query motion magnification level",
+        "full_command": "[client -> system] ID:55/Query/Camera2/MotionMagnificator/Level - Query motion magnification level",
+        "context": "mode of camera 2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "MotionMagnificator",
+        "parameter": "Level:10 - Reply about motion magnification",
+        "full_command": "[system -> client] ID:55/Reply/Camera2/MotionMagnificator/Level:10 - Reply about motion magnification",
+        "context": "from camera 2."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera2",
+        "submodule": "MotionDetector",
+        "parameter": "Mode",
+        "full_command": "ID:2/Query/Camera2/MotionDetector/Mode",
+        "context": "UP string-based query (from client to system):"
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera2",
+        "submodule": "MotionDetector",
+        "parameter": "Mode:1",
+        "full_command": "ID:2/Reply/Camera2/MotionDetector/Mode:1",
+        "context": "UP string-based reply (from system to client):"
+      }
+    ],
+    "CompanionMain": [
+      {
+        "message_type": "Query",
+        "module": "CompanionMain",
+        "submodule": "PowerChannel1Temperature channel of companion board",
+        "parameter": null,
+        "full_command": "ID:2/Query/CompanionMain/PowerChannel1Temperature channel of companion board",
+        "context": "Query temperature of first power"
+      },
+      {
+        "message_type": "Reply",
+        "module": "CompanionMain",
+        "submodule": "PowerChannel1Temperature:50",
+        "parameter": null,
+        "full_command": "ID:2/Reply/CompanionMain/PowerChannel1Temperature:50",
+        "context": "power channel of companion"
+      },
+      {
+        "message_type": "Query",
+        "module": "CompanionMain",
+        "submodule": "MainTemperature - Query main temperature from main",
+        "parameter": null,
+        "full_command": "[client -> system] ID:59/Query/CompanionMain/MainTemperature - Query main temperature from main",
+        "context": "of payload board 2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "CompanionMain",
+        "submodule": "MainTemperature:56 - Reply about main temperature",
+        "parameter": null,
+        "full_command": "[system -> client] ID:59/Reply/CompanionMain/MainTemperature:56 - Reply about main temperature",
+        "context": "board."
+      }
+    ],
+    "MotorControl": [
+      {
+        "message_type": "Command",
+        "module": "MotorControl",
+        "submodule": "Pan",
+        "parameter": "ToPos:120.5 - go to pan position 120.5 degree.",
+        "full_command": "[client -> system] ID:10/Command/MotorControl/Pan/ToPos:120.5 - go to pan position 120.5 degree.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "MotorControl",
+        "submodule": "Pan",
+        "parameter": "ToPos:500 - go to pan position 500 degree.",
+        "full_command": "[client -> system] ID:11/Command/MotorControl/Pan/ToPos:500 - go to pan position 500 degree.",
+        "context": "[system -> client] ID:10/Ack - command accepted."
+      },
+      {
+        "message_type": "Query",
+        "module": "MotorControl",
+        "submodule": "Tilt",
+        "parameter": "DownLimit - Query tilt down limit.",
+        "full_command": "[client -> system] ID:12/Query/MotorControl/Tilt/DownLimit - Query tilt down limit.",
+        "context": "[system -> client] ID:11/Nac - command not accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "MotorControl",
+        "submodule": "Tilt",
+        "parameter": "DownLimit:-60.1 - tilt down limit -60 degree.",
+        "full_command": "[system -> client] ID:12/Reply/MotorControl/Tilt/DownLimit:-60.1 - tilt down limit -60 degree.",
+        "context": "[client -> system] ID:12/Query/MotorControl/Tilt/DownLimit - Query tilt down limit."
+      },
+      {
+        "message_type": "Command",
+        "module": "MotorControl",
+        "submodule": "Pan",
+        "parameter": "RightLimit:10.8 - Set right pan limit to 10.8 degree.",
+        "full_command": "[client -> system] ID:13/Command/MotorControl/Pan/RightLimit:10.8 - Set right pan limit to 10.8 degree.",
+        "context": "[system -> client] ID:12/Reply/MotorControl/Tilt/DownLimit:-60.1 - tilt down limit -60 degree."
+      }
+    ],
+    "Camera3": [
+      {
+        "message_type": "Query",
+        "module": "Camera3",
+        "submodule": "Lens",
+        "parameter": "IsAfActive - Query auto focus status.",
+        "full_command": "[client -> system] ID:17/Query/Camera3/Lens/IsAfActive - Query auto focus status.",
+        "context": "[system -> client] ID:16/Reply/Camera2/Lens/FocusPos:100 - Focus position from camera 2."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera3",
+        "submodule": "Lens",
+        "parameter": "IsAfActive:0 - Auto focus not active.",
+        "full_command": "[system -> client] ID:17/Reply/Camera3/Lens/IsAfActive:0 - Auto focus not active.",
+        "context": "[client -> system] ID:17/Query/Camera3/Lens/IsAfActive - Query auto focus status."
+      },
+      {
+        "message_type": "Query",
+        "module": "Camera3",
+        "submodule": "Camera",
+        "parameter": "IsConnected - Query connection status.",
+        "full_command": "[client -> system] ID:21/Query/Camera3/Camera/IsConnected - Query connection status.",
+        "context": "23 / 86"
+      },
+      {
+        "message_type": "Reply",
+        "module": "Camera3",
+        "submodule": "Camera",
+        "parameter": "IsConnected:1 - Connected.",
+        "full_command": "[system -> client] ID:21/Reply/Camera3/Camera/IsConnected:1 - Connected.",
+        "context": "[client -> system] ID:21/Query/Camera3/Camera/IsConnected - Query connection status."
+      }
+    ],
+    "Companion1": [
+      {
+        "message_type": "Command",
+        "module": "Companion1",
+        "submodule": "WiperMode:1 - Enable wiper in payload board 1.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:56/Command/Companion1/WiperMode:1 - Enable wiper in payload board 1.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Companion1",
+        "submodule": "HeaterMode:1 - Enable heater in payload board 1.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:57/Command/Companion1/HeaterMode:1 - Enable heater in payload board 1.",
+        "context": "[system -> client] ID:56/Ack - Command accepted."
+      }
+    ],
+    "Companion2": [
+      {
+        "message_type": "Query",
+        "module": "Companion2",
+        "submodule": "PowerChannel1Mode - Query power channel 1 mode from",
+        "parameter": null,
+        "full_command": "[client -> system] ID:58/Query/Companion2/PowerChannel1Mode - Query power channel 1 mode from",
+        "context": "[system -> client] ID:57/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Companion2",
+        "submodule": "PowerChannel1Mode:1 - Reply about power channel 1 mode",
+        "parameter": null,
+        "full_command": "[system -> client] ID:58/Reply/Companion2/PowerChannel1Mode:1 - Reply about power channel 1 mode",
+        "context": "payload board 2."
+      }
+    ],
+    "Lrf": [
+      {
+        "message_type": "Command",
+        "module": "Lrf",
+        "submodule": "PointerMode:1 - Enable laser pointer.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:64/Command/Lrf/PointerMode:1 - Enable laser pointer.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Lrf",
+        "submodule": "Measure - Measure distance once.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:65/Command/Lrf/Measure - Measure distance once.",
+        "context": "[system -> client] ID:64/Ack - Command accepted."
+      },
+      {
+        "message_type": "Query",
+        "module": "Lrf",
+        "submodule": "PointerModeTimeoutSec - Query pointer mode timeout.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:66/Query/Lrf/PointerModeTimeoutSec - Query pointer mode timeout.",
+        "context": "[system -> client] ID:65/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Lrf",
+        "submodule": "PointerModeTimeoutSec:10 - Reply about pointer mode timeout.",
+        "parameter": null,
+        "full_command": "[system -> client] ID:66/Reply/Lrf/PointerModeTimeoutSec:10 - Reply about pointer mode timeout.",
+        "context": "[client -> system] ID:66/Query/Lrf/PointerModeTimeoutSec - Query pointer mode timeout."
+      },
+      {
+        "message_type": "Query",
+        "module": "Lrf",
+        "submodule": "Distance - Query measured distance.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:67/Query/Lrf/Distance - Query measured distance.",
+        "context": "[system -> client] ID:66/Reply/Lrf/PointerModeTimeoutSec:10 - Reply about pointer mode timeout."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Lrf",
+        "submodule": "Distance:56 - Reply about measured distance.",
+        "parameter": null,
+        "full_command": "[system -> client] ID:67/Reply/Lrf/Distance:56 - Reply about measured distance.",
+        "context": "[client -> system] ID:67/Query/Lrf/Distance - Query measured distance."
+      },
+      {
+        "message_type": "Command",
+        "module": "Lrf",
+        "submodule": "MinGateDistance:10",
+        "parameter": null,
+        "full_command": "ID:1/Command/Lrf/MinGateDistance:10",
+        "context": "UP string-based command (from client to system):"
+      }
+    ],
+    "Speaker": [
+      {
+        "message_type": "Command",
+        "module": "Speaker",
+        "submodule": "Play:clip1.mp3 - Play clip1.mp3.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:64/Command/Speaker/Play:clip1.mp3 - Play clip1.mp3.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "Speaker",
+        "submodule": "Stop - Stop playback.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:65/Command/Speaker/Stop - Stop playback.",
+        "context": "[system -> client] ID:64/Ack - Command accepted."
+      },
+      {
+        "message_type": "Query",
+        "module": "Speaker",
+        "submodule": "Volume - Query playback volume.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:66/Query/Speaker/Volume - Query playback volume.",
+        "context": "[system -> client] ID:65/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "Speaker",
+        "submodule": "Volume:10 - Reply about playback volume (10%).",
+        "parameter": null,
+        "full_command": "[system -> client] ID:66/Reply/Speaker/Volume:10 - Reply about playback volume (10%).",
+        "context": "[client -> system] ID:66/Query/Speaker/Volume - Query playback volume."
+      },
+      {
+        "message_type": "Command",
+        "module": "Speaker",
+        "submodule": "Volume:20 - Set playback volume to 20%.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:67/Command/Speaker/Volume:20 - Set playback volume to 20%.",
+        "context": "[system -> client] ID:66/Reply/Speaker/Volume:10 - Reply about playback volume (10%)."
+      }
+    ],
+    "General": [
+      {
+        "message_type": "Command",
+        "module": "General",
+        "submodule": "SlaveZoomMode:1 - Enable slave zoom mode.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:76/Command/General/SlaveZoomMode:1 - Enable slave zoom mode.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Query",
+        "module": "General",
+        "submodule": "VideoTrackerToken - Query video tracker license token.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:79/Query/General/VideoTrackerToken - Query video tracker license token.",
+        "context": "[system -> client] ID:76/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "General",
+        "submodule": "VideoTrackerToken:C7018FFD1BBE58C96DDD2534FF601FC62A112846FD13C30E5D",
+        "parameter": null,
+        "full_command": "ID:79/Reply/General/VideoTrackerToken:C7018FFD1BBE58C96DDD2534FF601FC62A112846FD13C30E5D",
+        "context": "[system -> client]"
+      }
+    ],
+    "ProcedureManager": [
+      {
+        "message_type": "Command",
+        "module": "ProcedureManager",
+        "submodule": "GoToPreset:2 - Go to preset 2.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:82/Command/ProcedureManager/GoToPreset:2 - Go to preset 2.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "ProcedureManager",
+        "submodule": "GoToPreset:2\\nID:83",
+        "parameter": "Command/Camera1/Lens/ZoomIn\\nID:84/",
+        "full_command": "ID:82/Command/ProcedureManager/GoToPreset:2\\nID:83/Command/Camera1/Lens/ZoomIn\\nID:84/",
+        "context": "multiple commands in one. User need put end of line symbol '\\n' between commands. Example:"
+      },
+      {
+        "message_type": "Command",
+        "module": "ProcedureManager",
+        "submodule": "GoToPreset:2\\nID:83",
+        "parameter": "Command/Camera1/Lens/ZoomIn\\nID:84/",
+        "full_command": "ID:82/Command/ProcedureManager/GoToPreset:2\\nID:83/Command/Camera1/Lens/ZoomIn\\nID:84/",
+        "context": "Client -> system:"
+      }
+    ],
+    "G5Laser": [
+      {
+        "message_type": "Command",
+        "module": "G5Laser",
+        "submodule": "MODE",
+        "parameter": "ARM:ON - Arm the laser.",
+        "full_command": "[client -> system] ID:90/Command/G5Laser/MODE/ARM:ON - Arm the laser.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "G5Laser",
+        "submodule": "MODE",
+        "parameter": "LIGHT:BEAM - Turn on light in BEAM mode.",
+        "full_command": "[client -> system] ID:91/Command/G5Laser/MODE/LIGHT:BEAM - Turn on light in BEAM mode.",
+        "context": "[system -> client] ID:90/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "G5Laser",
+        "submodule": "ARM-TIME:30 - Set auto-disarm timeout to 30 seconds.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:92/Command/G5Laser/ARM-TIME:30 - Set auto-disarm timeout to 30 seconds.",
+        "context": "[system -> client] ID:91/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "G5Laser",
+        "submodule": "BEAM-TIME:60 - Set beam",
+        "parameter": "strobe auto-off timeout to 60",
+        "full_command": "[client -> system] ID:93/Command/G5Laser/BEAM-TIME:60 - Set beam/strobe auto-off timeout to 60",
+        "context": "[system -> client] ID:92/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "G5Laser",
+        "submodule": "STROBE-TIME",
+        "parameter": "ON:100 - Set strobe ON duration to 100 ms.",
+        "full_command": "[client -> system] ID:94/Command/G5Laser/STROBE-TIME/ON:100 - Set strobe ON duration to 100 ms.",
+        "context": "[system -> client] ID:93/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "G5Laser",
+        "submodule": "STROBE-TIME",
+        "parameter": "OFF:50 - Set strobe OFF duration to 50 ms.",
+        "full_command": "[client -> system] ID:95/Command/G5Laser/STROBE-TIME/OFF:50 - Set strobe OFF duration to 50 ms.",
+        "context": "[system -> client] ID:94/Ack - Command accepted."
+      },
+      {
+        "message_type": "Query",
+        "module": "G5Laser",
+        "submodule": "READY - Query device readiness.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:96/Query/G5Laser/READY - Query device readiness.",
+        "context": "[system -> client] ID:95/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "G5Laser",
+        "submodule": "READY:READY - Device is ready.",
+        "parameter": null,
+        "full_command": "[system -> client] ID:96/Reply/G5Laser/READY:READY - Device is ready.",
+        "context": "[client -> system] ID:96/Query/G5Laser/READY - Query device readiness."
+      },
+      {
+        "message_type": "Query",
+        "module": "G5Laser",
+        "submodule": "ARM",
+        "parameter": "STATE - Query arm state.",
+        "full_command": "[client -> system] ID:97/Query/G5Laser/ARM/STATE - Query arm state.",
+        "context": "[system -> client] ID:96/Reply/G5Laser/READY:READY - Device is ready."
+      },
+      {
+        "message_type": "Reply",
+        "module": "G5Laser",
+        "submodule": "ARM",
+        "parameter": "STATE:ON - Laser is armed.",
+        "full_command": "[system -> client] ID:97/Reply/G5Laser/ARM/STATE:ON - Laser is armed.",
+        "context": "[client -> system] ID:97/Query/G5Laser/ARM/STATE - Query arm state."
+      },
+      {
+        "message_type": "Query",
+        "module": "G5Laser",
+        "submodule": "LIGHT",
+        "parameter": "STATE - Query light mode.",
+        "full_command": "[client -> system] ID:98/Query/G5Laser/LIGHT/STATE - Query light mode.",
+        "context": "[system -> client] ID:97/Reply/G5Laser/ARM/STATE:ON - Laser is armed."
+      },
+      {
+        "message_type": "Reply",
+        "module": "G5Laser",
+        "submodule": "LIGHT",
+        "parameter": "STATE:BEAM - Light mode is BEAM.",
+        "full_command": "[system -> client] ID:98/Reply/G5Laser/LIGHT/STATE:BEAM - Light mode is BEAM.",
+        "context": "[client -> system] ID:98/Query/G5Laser/LIGHT/STATE - Query light mode."
+      },
+      {
+        "message_type": "Query",
+        "module": "G5Laser",
+        "submodule": "TEMP",
+        "parameter": "LENS - Query lens temperature.",
+        "full_command": "[client -> system] ID:99/Query/G5Laser/TEMP/LENS - Query lens temperature.",
+        "context": "[system -> client] ID:98/Reply/G5Laser/LIGHT/STATE:BEAM - Light mode is BEAM."
+      },
+      {
+        "message_type": "Reply",
+        "module": "G5Laser",
+        "submodule": "TEMP",
+        "parameter": "LENS:32 - Lens temperature is 32C.",
+        "full_command": "[system -> client] ID:99/Reply/G5Laser/TEMP/LENS:32 - Lens temperature is 32C.",
+        "context": "[client -> system] ID:99/Query/G5Laser/TEMP/LENS - Query lens temperature."
+      }
+    ],
+    "PeakBeam": [
+      {
+        "message_type": "Command",
+        "module": "PeakBeam",
+        "submodule": "Mode:BEAM - Set operating mode BEAM.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:100/Command/PeakBeam/Mode:BEAM - Set operating mode BEAM.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Command",
+        "module": "PeakBeam",
+        "submodule": "Level:High - Set light intensity to High.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:101/Command/PeakBeam/Level:High - Set light intensity to High.",
+        "context": "[system -> client] ID:100/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "PeakBeam",
+        "submodule": "StrobeRate:15 - Set strobe frequency to 15 Hz.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:102/Command/PeakBeam/StrobeRate:15 - Set strobe frequency to 15 Hz.",
+        "context": "[system -> client] ID:101/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "PeakBeam",
+        "submodule": "ZoomRate:50 - Set zoom speed to 50%.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:103/Command/PeakBeam/ZoomRate:50 - Set zoom speed to 50%.",
+        "context": "[system -> client] ID:102/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "PeakBeam",
+        "submodule": "ToPos:75 - Move zoom to position 75.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:104/Command/PeakBeam/ToPos:75 - Move zoom to position 75.",
+        "context": "[system -> client] ID:103/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "PeakBeam",
+        "submodule": "Zoom:In - Start continuous zoom in.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:105/Command/PeakBeam/Zoom:In - Start continuous zoom in.",
+        "context": "[system -> client] ID:104/Ack - Command accepted."
+      },
+      {
+        "message_type": "Command",
+        "module": "PeakBeam",
+        "submodule": "ZoomStop - Stop zoom movement.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:106/Command/PeakBeam/ZoomStop - Stop zoom movement.",
+        "context": "[system -> client] ID:105/Ack - Command accepted."
+      },
+      {
+        "message_type": "Query",
+        "module": "PeakBeam",
+        "submodule": "Mode - Query current mode.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:107/Query/PeakBeam/Mode - Query current mode.",
+        "context": "[system -> client] ID:106/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "PeakBeam",
+        "submodule": "Mode:BEAM - Current mode is BEAM.",
+        "parameter": null,
+        "full_command": "[system -> client] ID:107/Reply/PeakBeam/Mode:BEAM - Current mode is BEAM.",
+        "context": "[client -> system] ID:107/Query/PeakBeam/Mode - Query current mode."
+      },
+      {
+        "message_type": "Query",
+        "module": "PeakBeam",
+        "submodule": "StrobeRate",
+        "parameter": "Hz - Query strobe rate in Hz.",
+        "full_command": "[client -> system] ID:108/Query/PeakBeam/StrobeRate/Hz - Query strobe rate in Hz.",
+        "context": "[system -> client] ID:107/Reply/PeakBeam/Mode:BEAM - Current mode is BEAM."
+      },
+      {
+        "message_type": "Reply",
+        "module": "PeakBeam",
+        "submodule": "StrobeRate",
+        "parameter": "Hz:15 - Strobe rate is 15 Hz.",
+        "full_command": "[system -> client] ID:108/Reply/PeakBeam/StrobeRate/Hz:15 - Strobe rate is 15 Hz.",
+        "context": "[client -> system] ID:108/Query/PeakBeam/StrobeRate/Hz - Query strobe rate in Hz."
+      },
+      {
+        "message_type": "Query",
+        "module": "PeakBeam",
+        "submodule": "Pos - Query zoom position.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:109/Query/PeakBeam/Pos - Query zoom position.",
+        "context": "[system -> client] ID:108/Reply/PeakBeam/StrobeRate/Hz:15 - Strobe rate is 15 Hz."
+      },
+      {
+        "message_type": "Reply",
+        "module": "PeakBeam",
+        "submodule": "Pos:75 - Zoom position is 75.",
+        "parameter": null,
+        "full_command": "[system -> client] ID:109/Reply/PeakBeam/Pos:75 - Zoom position is 75.",
+        "context": "[client -> system] ID:109/Query/PeakBeam/Pos - Query zoom position."
+      },
+      {
+        "message_type": "Query",
+        "module": "PeakBeam",
+        "submodule": "Temperature - Query housing temperature.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:110/Query/PeakBeam/Temperature - Query housing temperature.",
+        "context": "[system -> client] ID:109/Reply/PeakBeam/Pos:75 - Zoom position is 75."
+      },
+      {
+        "message_type": "Reply",
+        "module": "PeakBeam",
+        "submodule": "Temperature:32 - Housing temperature is 32C.",
+        "parameter": null,
+        "full_command": "[system -> client] ID:110/Reply/PeakBeam/Temperature:32 - Housing temperature is 32C.",
+        "context": "[client -> system] ID:110/Query/PeakBeam/Temperature - Query housing temperature."
+      }
+    ],
+    "ExternalUp": [
+      {
+        "message_type": "Command",
+        "module": "ExternalUp",
+        "submodule": "UdpPort:34020 - Set UDP port to 34020.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:106/Command/ExternalUp/UdpPort:34020 - Set UDP port to 34020.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Query",
+        "module": "ExternalUp",
+        "submodule": "UdpPort - Query UDP port.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:107/Query/ExternalUp/UdpPort - Query UDP port.",
+        "context": "[system -> client] ID:106/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "ExternalUp",
+        "submodule": "UdpPort:34020 - Current UDP port is 34020.",
+        "parameter": null,
+        "full_command": "[system -> client] ID:107/Reply/ExternalUp/UdpPort:34020 - Current UDP port is 34020.",
+        "context": "[client -> system] ID:107/Query/ExternalUp/UdpPort - Query UDP port."
+      },
+      {
+        "message_type": "Query",
+        "module": "ExternalUp",
+        "submodule": "TcpPort - Query TCP port.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:108/Query/ExternalUp/TcpPort - Query TCP port.",
+        "context": "[system -> client] ID:107/Reply/ExternalUp/UdpPort:34020 - Current UDP port is 34020."
+      },
+      {
+        "message_type": "Reply",
+        "module": "ExternalUp",
+        "submodule": "TcpPort:34030 - Current TCP port is 34030.",
+        "parameter": null,
+        "full_command": "[system -> client] ID:108/Reply/ExternalUp/TcpPort:34030 - Current TCP port is 34030.",
+        "context": "[client -> system] ID:108/Query/ExternalUp/TcpPort - Query TCP port."
+      }
+    ],
+    "PelcoD": [
+      {
+        "message_type": "Command",
+        "module": "PelcoD",
+        "submodule": "UdpPort:34000 - Set UDP port to 34000.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:106/Command/PelcoD/UdpPort:34000 - Set UDP port to 34000.",
+        "context": "Some example messages:"
+      },
+      {
+        "message_type": "Query",
+        "module": "PelcoD",
+        "submodule": "UdpPort - Query UDP port.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:107/Query/PelcoD/UdpPort - Query UDP port.",
+        "context": "[system -> client] ID:106/Ack - Command accepted."
+      },
+      {
+        "message_type": "Reply",
+        "module": "PelcoD",
+        "submodule": "UdpPort:34000 - Current UDP port is 34000.",
+        "parameter": null,
+        "full_command": "[system -> client] ID:107/Reply/PelcoD/UdpPort:34000 - Current UDP port is 34000.",
+        "context": "[client -> system] ID:107/Query/PelcoD/UdpPort - Query UDP port."
+      },
+      {
+        "message_type": "Query",
+        "module": "PelcoD",
+        "submodule": "TcpPort - Query TCP port.",
+        "parameter": null,
+        "full_command": "[client -> system] ID:108/Query/PelcoD/TcpPort - Query TCP port.",
+        "context": "[system -> client] ID:107/Reply/PelcoD/UdpPort:34000 - Current UDP port is 34000."
+      },
+      {
+        "message_type": "Reply",
+        "module": "PelcoD",
+        "submodule": "TcpPort:34010 - Current TCP port is 34010.",
+        "parameter": null,
+        "full_command": "[system -> client] ID:108/Reply/PelcoD/TcpPort:34010 - Current TCP port is 34010.",
+        "context": "[client -> system] ID:108/Query/PelcoD/TcpPort - Query TCP port."
+      }
+    ],
+    "\" + command + \"\\n\";": [
+      {
+        "message_type": "Command",
+        "module": "\" + command + \"\\n\";",
+        "submodule": null,
+        "parameter": null,
+        "full_command": "command = \"ID:0/Command/\" + command + \"\\n\";",
+        "context": "cin >> command;"
+      }
+    ]
+  },
+  "module_list": [
+    "\" + command + \"\\n\";",
+    "Camera1",
+    "Camera2",
+    "Camera3",
+    "Companion1",
+    "Companion2",
+    "CompanionMain",
+    "ExternalUp",
+    "G5Laser",
+    "General",
+    "Lrf",
+    "MotorControl",
+    "PeakBeam",
+    "PelcoD",
+    "ProcedureManager",
+    "Speaker"
+  ],
+  "source_file": "Reference Material\\External_UP_protocol_v2.4.7.pdf",
+  "protocol_type": "string-based",
+  "format": "ID:N/MessageType/Module/Submodule/Parameter"
+}

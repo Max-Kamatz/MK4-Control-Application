@@ -16,6 +16,7 @@ class VideoStreamThread(QThread):
         self.rtsp_url = rtsp_url
         self.running = False
         self.cap = None
+        self._url_changed = False
 
     def run(self):
         self.running = True
@@ -26,8 +27,16 @@ class VideoStreamThread(QThread):
                 logger.info(f"Connecting to RTSP stream: {self.rtsp_url}")
                 self.status_changed.emit("connecting")
 
+                # Set timeout environment variable for OpenCV (in milliseconds)
+                import os
+                os.environ['OPENCV_FFMPEG_READ_ATTEMPTS'] = '1'
+                os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'rtsp_transport;udp|timeout;5000000'
+
                 self.cap = cv2.VideoCapture(self.rtsp_url, cv2.CAP_FFMPEG)
                 self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                # Set short timeout for connection
+                self.cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 5000)
+                self.cap.set(cv2.CAP_PROP_READ_TIMEOUT_MSEC, 5000)
 
                 if not self.cap.isOpened():
                     logger.warning(f"Failed to open RTSP stream: {self.rtsp_url}")
@@ -38,7 +47,7 @@ class VideoStreamThread(QThread):
                 self.status_changed.emit("connected")
                 logger.info(f"Successfully connected to: {self.rtsp_url}")
 
-                while self.running:
+                while self.running and not self._url_changed:
                     ret, frame = self.cap.read()
                     if not ret:
                         logger.warning("Failed to read frame, reconnecting...")
@@ -47,6 +56,11 @@ class VideoStreamThread(QThread):
 
                     self.frame_ready.emit(frame)
                     self.msleep(33)
+
+                # If URL changed, break out to reconnect with new URL
+                if self._url_changed:
+                    logger.info(f"URL changed, reconnecting to: {self.rtsp_url}")
+                    self._url_changed = False
 
             except Exception as e:
                 logger.error(f"Error in video stream: {e}")
@@ -59,21 +73,31 @@ class VideoStreamThread(QThread):
             if self.running:
                 self.msleep(reconnect_delay * 1000)
 
+    def change_url(self, new_url: str):
+        """Change the RTSP URL and trigger reconnection."""
+        if self.rtsp_url != new_url:
+            self.rtsp_url = new_url
+            self._url_changed = True
+            # Release current capture to force reconnect with new URL
+            if self.cap:
+                self.cap.release()
+
     def stop(self):
         self.running = False
         if self.cap:
             self.cap.release()
         self.quit()
-        self.wait()
+        # Don't wait() here - it blocks the caller. Let it finish asynchronously.
 
 
 class RTSPVideoWidget(QWidget):
-    def __init__(self, rtsp_url: str, label: str):
+    def __init__(self, rtsp_url: str, label: str, auto_start: bool = True):
         super().__init__()
         self.rtsp_url = rtsp_url
         self.label_text = label
         self.init_ui()
-        self.start_stream()
+        if auto_start:
+            self.start_stream()
 
     def init_ui(self):
         layout = QVBoxLayout()
@@ -129,14 +153,21 @@ class RTSPVideoWidget(QWidget):
             "connecting": ("● Connecting...", "#ffff44"),
             "buffering": ("● Buffering...", "#ffaa44"),
             "disconnected": ("● Disconnected", "#ff4444"),
-            "error": ("● Error", "#ff0000")
+            "error": ("● Error", "#ff0000"),
+            "unavailable": ("● Camera Not Available", "#888888")
         }
 
         text, color = status_map.get(status, ("● Unknown", "#888888"))
         self.status_label.setText(text)
         self.status_label.setStyleSheet(f"color: {color}; font-size: 10pt;")
 
+    def set_unavailable(self):
+        """Mark this camera as unavailable (not connected to payload)."""
+        self.video_label.setText("Camera Not Available\n\nThis camera is not connected to the payload.")
+        self.update_status("unavailable")
+
     def closeEvent(self, event):
         if hasattr(self, 'stream_thread'):
             self.stream_thread.stop()
+            self.stream_thread.wait(2000)  # Wait max 2 seconds for thread to finish
         event.accept()

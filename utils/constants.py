@@ -26,7 +26,7 @@ def load_config(config_path: str = "config/default_config.json") -> Dict[str, An
 TARGET_IP = "192.168.1.100"
 TCP_PELCO_PORT = 54000
 UDP_TELEMETRY_PORT = 58000
-UP_PROTOCOL_PORT = 58004
+UP_PROTOCOL_PORT = 34030  # EUP (External UP Protocol) per v2.4.7 specification
 
 RTSP_THERMAL = "rtsp://192.168.1.100:7031/Cam1Stream1"
 RTSP_DAYLIGHT = "rtsp://192.168.1.100:7031/Cam2Stream1"

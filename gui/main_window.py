@@ -1,7 +1,8 @@
 from PyQt6.QtWidgets import QMainWindow, QTabWidget, QStatusBar, QWidget
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPalette, QColor
+from PyQt6.QtGui import QPalette, QColor, QAction
 from network.network_thread import NetworkThread
+from gui.widgets.log_viewer import LogViewerDialog
 from utils.logger import setup_logger
 from utils.constants import load_config
 
@@ -12,6 +13,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.config = load_config()
         self.network_thread = None
+        self.log_viewer = None
         self.init_ui()
         self.apply_dark_theme()
 
@@ -19,12 +21,24 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(self.config['ui']['window_title'])
         self.setGeometry(100, 100, 1400, 900)
 
-        self.tab_widget = QTabWidget()
-        self.setCentralWidget(self.tab_widget)
+        # Create menu bar
+        menubar = self.menuBar()
+
+        # Tools menu
+        tools_menu = menubar.addMenu("Tools")
+
+        # View Logs action
+        view_logs_action = QAction("📋 View Logs", self)
+        view_logs_action.setShortcut("Ctrl+L")
+        view_logs_action.triggered.connect(self.show_log_viewer)
+        tools_menu.addAction(view_logs_action)
+
+        # No tab widget - will set central widget directly
+        self.central_widget = None
 
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
-        self.status_bar.showMessage("Ready - Not Connected")
+        self.status_bar.showMessage("Ready - Not Connected | Press Ctrl+L to view logs")
 
         logger.info("Main window initialized")
 
@@ -69,8 +83,10 @@ class MainWindow(QMainWindow):
             }
         """)
 
-    def add_tab(self, widget: QWidget, label: str):
-        self.tab_widget.addTab(widget, label)
+    def set_central_content(self, widget: QWidget):
+        """Set the main content widget (no tabs)."""
+        self.central_widget = widget
+        self.setCentralWidget(widget)
 
     def update_status(self, message: str):
         self.status_bar.showMessage(message)
@@ -97,8 +113,20 @@ class MainWindow(QMainWindow):
         self.update_status(f"Error: {error_msg}")
         logger.error(error_msg)
 
+    def show_log_viewer(self):
+        """Show the real-time log viewer dialog."""
+        if self.log_viewer is None or not self.log_viewer.isVisible():
+            self.log_viewer = LogViewerDialog(self)
+            self.log_viewer.show()
+            logger.info("Log viewer opened")
+        else:
+            self.log_viewer.raise_()
+            self.log_viewer.activateWindow()
+
     def closeEvent(self, event):
         logger.info("Application closing")
         if self.network_thread:
             self.network_thread.stop()
+        if self.log_viewer:
+            self.log_viewer.close()
         event.accept()
