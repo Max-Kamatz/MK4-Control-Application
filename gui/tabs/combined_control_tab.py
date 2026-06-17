@@ -4,119 +4,15 @@ Combined video display and PTZ control tab - shows streams and trackpad control 
 """
 
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
-                             QGroupBox, QLabel, QGridLayout, QPushButton, QLineEdit, QSlider, QTabWidget, QTextEdit, QButtonGroup)
-from PyQt6.QtCore import Qt, pyqtSignal, QThread
-from PyQt6.QtGui import QTextCursor
+                             QGroupBox, QLabel, QGridLayout, QPushButton, QLineEdit, QSlider, QButtonGroup)
+from PyQt6.QtCore import Qt, pyqtSignal
 from gui.widgets.rtsp_video_widget import RTSPVideoWidget
 from gui.widgets.ptz_trackpad import PTZControlWidget
 from utils.constants import load_config
 from utils.logger import setup_logger
-from utils.network_discovery import discover_payload
 from utils.camera_discovery import discover_cameras
 
 logger = setup_logger()
-
-
-class DiscoveryThread(QThread):
-    """Background thread for network discovery to avoid blocking GUI."""
-    discovery_complete = pyqtSignal(bool, dict)  # (is_available, services)
-
-    def __init__(self, ip_address: str):
-        super().__init__()
-        self.ip_address = ip_address
-
-    def run(self):
-        is_available, services = discover_payload(self.ip_address)
-        self.discovery_complete.emit(is_available, services)
-
-
-class ComponentStatusThread(QThread):
-    """Background thread for component status checks via SSH to main board."""
-    status_update = pyqtSignal(str, bool)  # (component_name, is_online)
-    check_complete = pyqtSignal()
-
-    def __init__(self, component_status: dict, main_board_ip: str):
-        super().__init__()
-        self.component_status = component_status
-        self.main_board_ip = main_board_ip
-        self.ssh_user = "silentsentinel"
-        self.ssh_pass = "Sentinel123"
-
-    def run(self):
-        from utils.logger import setup_logger
-
-        logger = setup_logger()
-        logger.info(f"ComponentStatusThread: SSH to {self.main_board_ip} to ping internal components")
-
-        try:
-            import paramiko
-        except ImportError:
-            logger.error("paramiko library not installed. Install with: pip install paramiko")
-            self.check_complete.emit()
-            return
-
-        # Create SSH client
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-        try:
-            logger.info(f"Connecting to {self.main_board_ip} via SSH as {self.ssh_user}")
-            ssh.connect(
-                self.main_board_ip,
-                username=self.ssh_user,
-                password=self.ssh_pass,
-                timeout=10,
-                look_for_keys=False,
-                allow_agent=False
-            )
-            logger.info("SSH connection established")
-
-            for component_name, component_data in self.component_status.items():
-                ip = component_data['ip']
-
-                # Skip Main Board (already marked as online)
-                if component_name == 'Main Board':
-                    logger.debug(f"ComponentStatusThread: Skipping {component_name} (already online)")
-                    continue
-
-                if ip is None:
-                    logger.warning(f"ComponentStatusThread: {component_name} has no IP address, skipping")
-                    continue
-
-                logger.debug(f"ComponentStatusThread: Pinging {component_name} at {ip} via SSH")
-
-                # Execute ping command on the main board
-                ping_command = f'ping -c 1 -W 2 {ip}'
-
-                try:
-                    stdin, stdout, stderr = ssh.exec_command(ping_command, timeout=5)
-                    exit_status = stdout.channel.recv_exit_status()
-                    success = (exit_status == 0)
-
-                    logger.info(f"ComponentStatusThread: {component_name} ({ip}) - {'ONLINE' if success else 'OFFLINE'} (exit: {exit_status})")
-                    self.status_update.emit(component_name, success)
-
-                except Exception as e:
-                    logger.error(f"ComponentStatusThread: {component_name} ({ip}) - PING ERROR: {e}")
-                    self.status_update.emit(component_name, False)
-
-            ssh.close()
-            logger.info("SSH connection closed")
-
-        except paramiko.AuthenticationException:
-            logger.error(f"SSH authentication failed for {self.ssh_user}@{self.main_board_ip}")
-        except paramiko.SSHException as e:
-            logger.error(f"SSH connection error: {e}")
-        except Exception as e:
-            logger.error(f"ComponentStatusThread: Unexpected error: {e}")
-        finally:
-            try:
-                ssh.close()
-            except:
-                pass
-
-        logger.info("ComponentStatusThread: All SSH ping checks complete")
-        self.check_complete.emit()
 
 
 class CombinedControlTab(QWidget):
@@ -137,9 +33,8 @@ class CombinedControlTab(QWidget):
     focus_command = pyqtSignal(int)     # +1 = far, -1 = near
     focus_stop = pyqtSignal()
 
-    # Home/connection
+    # Home
     home_requested = pyqtSignal()
-    connection_toggle = pyqtSignal()
 
     # Speed control signals
     pan_speed_changed = pyqtSignal(float)  # degrees/sec
@@ -147,14 +42,22 @@ class CombinedControlTab(QWidget):
     zoom_speed_changed = pyqtSignal(float)  # -1.0 to 1.0
     focus_speed_changed = pyqtSignal(float)  # -1.0 to 1.0
 
+    # Camera function signals (camera number, value)
+    zoom_to_position = pyqtSignal(int, int)  # camera, position
+    autofocus_requested = pyqtSignal(int)  # camera
+    camera_profile_changed = pyqtSignal(int, int)  # camera, profile
+    video_stabilizer_changed = pyqtSignal(int, bool)  # camera, enable
+    digital_zoom_level_changed = pyqtSignal(int, float)  # camera, level
+    digital_zoom_enabled_changed = pyqtSignal(int, bool)  # camera, enable
+    clahe_changed = pyqtSignal(int, bool)  # camera, enable
+    color_palette_changed = pyqtSignal(int, int)  # camera, palette
+    color_filter_changed = pyqtSignal(int, bool)  # camera, enable
+
     def __init__(self):
         super().__init__()
         self.config = load_config()
         self.actual_pan = None
         self.actual_tilt = None
-        self.discovery_thread = None
-        self.component_status_thread = None
-        self.payload_available = False
         self.camera_availability = {}  # Track which cameras are available
         self.init_ui()
 
@@ -180,12 +83,15 @@ class CombinedControlTab(QWidget):
     def create_video_section(self) -> QWidget:
         """Create video display section with dynamic camera layout."""
         self.video_widget = QWidget()
+        self.video_widget.setObjectName("video_container")
+
         self.video_layout = QVBoxLayout()
         self.video_layout.setSpacing(5)
-        self.video_layout.setContentsMargins(0, 0, 0, 0)
+        self.video_layout.setContentsMargins(10, 10, 10, 10)
 
         # Create placeholder for dynamic video grid
         self.video_grid_widget = QWidget()
+        self.video_grid_widget.setObjectName("video_grid")
         self.video_grid = QGridLayout()
         self.video_grid.setSpacing(10)
         self.video_grid_widget.setLayout(self.video_grid)
@@ -224,158 +130,22 @@ class CombinedControlTab(QWidget):
         # Show placeholder message
         self.no_cameras_label = QLabel("Connect to a payload to view camera feeds")
         self.no_cameras_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.no_cameras_label.setStyleSheet("font-size: 12pt; color: #888; padding: 50px;")
+        self.no_cameras_label.setStyleSheet("""
+            font-size: 12pt;
+            color: #a0a8b0;
+            padding: 50px;
+            background-color: transparent;
+            border: none;
+        """)
         self.video_grid.addWidget(self.no_cameras_label, 0, 0)
 
         self.video_widget.setLayout(self.video_layout)
         return self.video_widget
 
     def create_control_section(self) -> QWidget:
-        """Create PTZ control section with tabbed interface."""
+        """Create PTZ control section."""
         widget = QWidget()
         widget.setFixedWidth(480)  # Fixed width like reference app (360px in reference)
-        layout = QVBoxLayout()
-        layout.setSpacing(0)
-        layout.setContentsMargins(0, 0, 0, 0)
-
-        # Create tab widget
-        tabs = QTabWidget()
-        tabs.addTab(self.create_connection_tab(), "Connection")
-        tabs.addTab(self.create_control_tab(), "Control")
-        tabs.addTab(self.create_status_tab(), "Status")
-
-        layout.addWidget(tabs)
-        widget.setLayout(layout)
-        return widget
-
-    def create_connection_tab(self) -> QWidget:
-        """Create connection tab."""
-        widget = QWidget()
-        layout = QVBoxLayout()
-        layout.setSpacing(10)
-        layout.setContentsMargins(10, 10, 10, 10)
-
-        # Connection status group
-        status_group = QGroupBox("Network")
-        status_layout = QVBoxLayout()
-
-        # IP Address input with status indicator
-        ip_row = QHBoxLayout()
-        ip_label = QLabel("Target IP Address:")
-        ip_label.setStyleSheet("font-size: 10pt; font-weight: bold;")
-        ip_row.addWidget(ip_label)
-
-        # Connection status indicator (next to IP label)
-        self.connection_indicator = QLabel("not connected")
-        self.connection_indicator.setStyleSheet("""
-            font-size: 9pt;
-            color: #ff4444;
-            padding-left: 10px;
-        """)
-        ip_row.addWidget(self.connection_indicator)
-        ip_row.addStretch()
-
-        status_layout.addLayout(ip_row)
-
-        self.ip_input = QLineEdit()
-        self.ip_input.setText(self.config['network']['target_ip'])
-        self.ip_input.setPlaceholderText("192.168.1.100")
-        self.ip_input.setStyleSheet("""
-            QLineEdit {
-                padding: 8px;
-                font-size: 11pt;
-                font-family: 'Courier New', monospace;
-                background-color: #2b2b2b;
-                border: 2px solid #555;
-                border-radius: 4px;
-            }
-            QLineEdit:focus {
-                border: 2px solid #2a82da;
-            }
-        """)
-        status_layout.addWidget(self.ip_input)
-
-        # Connect button
-        self.connect_button = QPushButton("Connect")
-        self.connect_button.setStyleSheet("padding: 10px; font-size: 11pt;")
-        self.connect_button.clicked.connect(self.connection_toggle.emit)
-        status_layout.addWidget(self.connect_button)
-
-        status_group.setLayout(status_layout)
-        layout.addWidget(status_group)
-
-        # Connection Log group
-        log_group = QGroupBox("Connection Log")
-        log_layout = QVBoxLayout()
-
-        self.connection_log = QTextEdit()
-        self.connection_log.setReadOnly(True)
-        self.connection_log.setMaximumHeight(200)
-        self.connection_log.setStyleSheet("""
-            QTextEdit {
-                background-color: #1a1a1a;
-                color: #aaaaaa;
-                font-family: 'Consolas', 'Courier New', monospace;
-                font-size: 9pt;
-                border: 1px solid #555;
-            }
-        """)
-        self.connection_log.append("Ready - waiting for connection...")
-
-        log_layout.addWidget(self.connection_log)
-        log_group.setLayout(log_layout)
-        layout.addWidget(log_group)
-
-        # Status group - component health indicators
-        status_group = QGroupBox("Status")
-        status_layout = QGridLayout()
-        status_layout.setSpacing(8)
-
-        # Component list with IP addresses (from IP Allocations.txt)
-        self.component_status = {
-            'Main Board': {'ip': None, 'label': None},  # User-defined IP
-            'Daylight': {'ip': '10.10.10.2', 'label': None},
-            'Thermal': {'ip': '10.10.10.3', 'label': None},
-            'SWIR': {'ip': '10.10.10.4', 'label': None},
-            'WL Illuminator': {'ip': '10.10.10.5', 'label': None},
-            'IR Illuminator': {'ip': '10.10.10.6', 'label': None},
-            'Sub-Payload': {'ip': '10.10.10.8', 'label': None},
-            'Speaker': {'ip': '10.10.10.7', 'label': None}
-        }
-
-        # Create status indicators for each component
-        row = 0
-        for component_name, component_data in self.component_status.items():
-            # Component name label
-            name_label = QLabel(f"{component_name}:")
-            name_label.setStyleSheet("font-size: 9pt;")
-            status_layout.addWidget(name_label, row, 0)
-
-            # Status indicator (colored dot)
-            status_indicator = QLabel("●")
-            status_indicator.setStyleSheet("""
-                font-size: 14pt;
-                color: #888888;
-                padding: 0px;
-            """)
-            status_indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            status_layout.addWidget(status_indicator, row, 1)
-
-            # Store reference to the label for updates
-            component_data['label'] = status_indicator
-            row += 1
-
-        status_group.setLayout(status_layout)
-        layout.addWidget(status_group)
-
-        layout.addStretch()
-
-        widget.setLayout(layout)
-        return widget
-
-    def create_control_tab(self) -> QWidget:
-        """Create PTZ control tab."""
-        widget = QWidget()
         layout = QVBoxLayout()
         layout.setSpacing(10)
         layout.setContentsMargins(10, 10, 10, 10)
@@ -508,14 +278,14 @@ class CombinedControlTab(QWidget):
 
         # Pan Speed Slider
         speed_layout.addWidget(QLabel("<b>Pan Speed:</b>"), 0, 0)
-        self.pan_speed_label = QLabel("0.0 °/s")
+        self.pan_speed_label = QLabel("0.00")
         self.pan_speed_label.setStyleSheet("font-size: 10pt; color: #2a82da;")
         self.pan_speed_label.setAlignment(Qt.AlignmentFlag.AlignRight)
         speed_layout.addWidget(self.pan_speed_label, 0, 1)
 
         self.pan_speed_slider = QSlider(Qt.Orientation.Horizontal)
-        self.pan_speed_slider.setMinimum(-100)  # -10.0 deg/s
-        self.pan_speed_slider.setMaximum(100)   # +10.0 deg/s
+        self.pan_speed_slider.setMinimum(0)     # 0.0
+        self.pan_speed_slider.setMaximum(100)   # 1.0
         self.pan_speed_slider.setValue(0)
         self.pan_speed_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
         self.pan_speed_slider.setTickInterval(25)
@@ -524,14 +294,14 @@ class CombinedControlTab(QWidget):
 
         # Tilt Speed Slider
         speed_layout.addWidget(QLabel("<b>Tilt Speed:</b>"), 2, 0)
-        self.tilt_speed_label = QLabel("0.0 °/s")
+        self.tilt_speed_label = QLabel("0.00")
         self.tilt_speed_label.setStyleSheet("font-size: 10pt; color: #2a82da;")
         self.tilt_speed_label.setAlignment(Qt.AlignmentFlag.AlignRight)
         speed_layout.addWidget(self.tilt_speed_label, 2, 1)
 
         self.tilt_speed_slider = QSlider(Qt.Orientation.Horizontal)
-        self.tilt_speed_slider.setMinimum(-100)  # -10.0 deg/s
-        self.tilt_speed_slider.setMaximum(100)   # +10.0 deg/s
+        self.tilt_speed_slider.setMinimum(0)     # 0.0
+        self.tilt_speed_slider.setMaximum(100)   # 1.0
         self.tilt_speed_slider.setValue(0)
         self.tilt_speed_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
         self.tilt_speed_slider.setTickInterval(25)
@@ -546,8 +316,8 @@ class CombinedControlTab(QWidget):
         speed_layout.addWidget(self.zoom_speed_label, 4, 1)
 
         self.zoom_speed_slider = QSlider(Qt.Orientation.Horizontal)
-        self.zoom_speed_slider.setMinimum(-100)  # -1.0 (out)
-        self.zoom_speed_slider.setMaximum(100)   # +1.0 (in)
+        self.zoom_speed_slider.setMinimum(0)     # 0.0
+        self.zoom_speed_slider.setMaximum(100)   # 1.0
         self.zoom_speed_slider.setValue(0)
         self.zoom_speed_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
         self.zoom_speed_slider.setTickInterval(25)
@@ -562,8 +332,8 @@ class CombinedControlTab(QWidget):
         speed_layout.addWidget(self.focus_speed_label, 6, 1)
 
         self.focus_speed_slider = QSlider(Qt.Orientation.Horizontal)
-        self.focus_speed_slider.setMinimum(-100)  # -1.0 (near)
-        self.focus_speed_slider.setMaximum(100)   # +1.0 (far)
+        self.focus_speed_slider.setMinimum(0)     # 0.0
+        self.focus_speed_slider.setMaximum(100)   # 1.0
         self.focus_speed_slider.setValue(0)
         self.focus_speed_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
         self.focus_speed_slider.setTickInterval(25)
@@ -603,23 +373,6 @@ class CombinedControlTab(QWidget):
 
         position_group.setLayout(position_layout)
         layout.addWidget(position_group)
-
-        layout.addStretch()
-        widget.setLayout(layout)
-        return widget
-
-    def create_status_tab(self) -> QWidget:
-        """Create status/telemetry tab."""
-        widget = QWidget()
-        layout = QVBoxLayout()
-        layout.setSpacing(10)
-        layout.setContentsMargins(10, 10, 10, 10)
-
-        # Status tab is now available for future telemetry/diagnostics
-        info_label = QLabel("Position feedback has been moved to the Control tab.")
-        info_label.setStyleSheet("font-size: 10pt; color: #888; padding: 20px;")
-        info_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(info_label)
 
         layout.addStretch()
         widget.setLayout(layout)
@@ -666,7 +419,6 @@ class CombinedControlTab(QWidget):
         camera_id = button.property("camera")
         camera_name = button.text()
         logger.info(f"Active camera changed to: {camera_name} ({camera_id})")
-        self.log_connection_event(f"Active camera: {camera_name}")
 
     def get_selected_camera(self) -> str:
         """Get the currently selected camera module name (Camera1, Camera2, or Camera3)."""
@@ -701,17 +453,17 @@ class CombinedControlTab(QWidget):
 
     def on_pan_speed_changed(self, value: int):
         """Handle pan speed slider change."""
-        speed = value / 10.0  # Convert to degrees/second
-        self.pan_speed_label.setText(f"{speed:.1f} °/s")
+        speed = value / 100.0  # Convert to 0.0 to 1.0
+        self.pan_speed_label.setText(f"{speed:.2f}")
         self.pan_speed_changed.emit(speed)
-        logger.debug(f"Pan speed: {speed:.1f} °/s")
+        logger.debug(f"Pan speed: {speed:.2f}")
 
     def on_tilt_speed_changed(self, value: int):
         """Handle tilt speed slider change."""
-        speed = value / 10.0  # Convert to degrees/second
-        self.tilt_speed_label.setText(f"{speed:.1f} °/s")
+        speed = value / 100.0  # Convert to 0.0 to 1.0
+        self.tilt_speed_label.setText(f"{speed:.2f}")
         self.tilt_speed_changed.emit(speed)
-        logger.debug(f"Tilt speed: {speed:.1f} °/s")
+        logger.debug(f"Tilt speed: {speed:.2f}")
 
     def on_zoom_speed_changed(self, value: int):
         """Handle zoom speed slider change."""
@@ -729,47 +481,47 @@ class CombinedControlTab(QWidget):
 
     def on_arrow_up_pressed(self):
         """Handle up arrow pressed - use tilt slider value."""
-        tilt_speed = self.tilt_speed_slider.value() / 10.0
+        tilt_speed = self.tilt_speed_slider.value() / 100.0
         # Use positive speed for up, or default if slider is at 0
         if tilt_speed == 0:
-            tilt_speed = 5.0  # Default speed
+            tilt_speed = 0.5  # Default speed
         else:
             tilt_speed = abs(tilt_speed)  # Always positive for up
         self.tilt_speed_changed.emit(tilt_speed)
-        logger.debug(f"Arrow UP: Tilt speed {tilt_speed:.1f} °/s")
+        logger.debug(f"Arrow UP: Tilt speed {tilt_speed:.2f}")
 
     def on_arrow_down_pressed(self):
         """Handle down arrow pressed - use tilt slider value."""
-        tilt_speed = self.tilt_speed_slider.value() / 10.0
+        tilt_speed = self.tilt_speed_slider.value() / 100.0
         # Use negative speed for down, or default if slider is at 0
         if tilt_speed == 0:
-            tilt_speed = -5.0  # Default speed
+            tilt_speed = -0.5  # Default speed
         else:
             tilt_speed = -abs(tilt_speed)  # Always negative for down
         self.tilt_speed_changed.emit(tilt_speed)
-        logger.debug(f"Arrow DOWN: Tilt speed {tilt_speed:.1f} °/s")
+        logger.debug(f"Arrow DOWN: Tilt speed {tilt_speed:.2f}")
 
     def on_arrow_left_pressed(self):
         """Handle left arrow pressed - use pan slider value."""
-        pan_speed = self.pan_speed_slider.value() / 10.0
+        pan_speed = self.pan_speed_slider.value() / 100.0
         # Use negative speed for left, or default if slider is at 0
         if pan_speed == 0:
-            pan_speed = -5.0  # Default speed
+            pan_speed = -0.5  # Default speed
         else:
             pan_speed = -abs(pan_speed)  # Always negative for left
         self.pan_speed_changed.emit(pan_speed)
-        logger.debug(f"Arrow LEFT: Pan speed {pan_speed:.1f} °/s")
+        logger.debug(f"Arrow LEFT: Pan speed {pan_speed:.2f}")
 
     def on_arrow_right_pressed(self):
         """Handle right arrow pressed - use pan slider value."""
-        pan_speed = self.pan_speed_slider.value() / 10.0
+        pan_speed = self.pan_speed_slider.value() / 100.0
         # Use positive speed for right, or default if slider is at 0
         if pan_speed == 0:
-            pan_speed = 5.0  # Default speed
+            pan_speed = 0.5  # Default speed
         else:
             pan_speed = abs(pan_speed)  # Always positive for right
         self.pan_speed_changed.emit(pan_speed)
-        logger.debug(f"Arrow RIGHT: Pan speed {pan_speed:.1f} °/s")
+        logger.debug(f"Arrow RIGHT: Pan speed {pan_speed:.2f}")
 
     def on_arrow_released(self):
         """Handle arrow button released - stop movement."""
@@ -783,10 +535,6 @@ class CombinedControlTab(QWidget):
         self.actual_tilt = tilt
         self.actual_pan_label.setText(f"{pan:.1f}°")
         self.actual_tilt_label.setText(f"{tilt:.1f}°")
-
-    def get_target_ip(self) -> str:
-        """Get the current target IP from the input field."""
-        return self.ip_input.text().strip()
 
     def rebuild_video_layout(self):
         """Rebuild video layout based on available cameras."""
@@ -864,7 +612,7 @@ class CombinedControlTab(QWidget):
 
     def update_video_streams_ip(self, new_ip: str):
         """Update video stream URLs with new IP address and discover available cameras."""
-        self.log_connection_event(f"Discovering cameras at {new_ip}...")
+        logger.info(f"Discovering cameras at {new_ip}...")
 
         # Build camera configs with new IP
         camera_configs = {
@@ -879,9 +627,8 @@ class CombinedControlTab(QWidget):
 
         # Log availability
         for cam_name, available in self.camera_availability.items():
-            status = "✓ Available" if available else "✗ Not available"
+            status = "Available" if available else "Not available"
             logger.info(f"  {cam_name.capitalize()}: {status}")
-            self.log_connection_event(f"{cam_name.capitalize()}: {status}")
 
         # Update URLs for all cameras, but only START streams for available ones
         thermal_url = camera_configs['thermal']['url']
@@ -947,101 +694,8 @@ class CombinedControlTab(QWidget):
         available_count = sum(1 for v in self.camera_availability.values() if v)
         logger.info(f"Video streams updated: {available_count}/3 cameras available")
 
-        # Log discovery status to connection log
-        if available_count > 0:
-            self.log_connection_event(f"✅ {available_count}/3 cameras available")
-        else:
-            self.log_connection_event("⚠️ No cameras available")
-
         # Rebuild the video layout based on available cameras
         self.rebuild_video_layout()
-
-    def update_connection_status(self, connected: bool):
-        """Update connection status indicator."""
-        if connected:
-            # Green "connected" text
-            self.connection_indicator.setText("connected")
-            self.connection_indicator.setStyleSheet("""
-                font-size: 9pt;
-                color: #44ff44;
-                padding-left: 10px;
-            """)
-            self.connect_button.setText("Disconnect")
-            self.ip_input.setEnabled(False)  # Disable IP changes while connected
-            self.log_connection_event("✓ Connected to MK4 system")
-        else:
-            # Red "not connected" text
-            self.connection_indicator.setText("not connected")
-            self.connection_indicator.setStyleSheet("""
-                font-size: 9pt;
-                color: #ff4444;
-                padding-left: 10px;
-            """)
-            self.connect_button.setText("Connect")
-            self.ip_input.setEnabled(True)  # Enable IP changes when disconnected
-            self.log_connection_event("✗ Disconnected from MK4 system")
-
-    def log_connection_event(self, message: str):
-        """Append a message to the connection log with auto-scroll."""
-        from datetime import datetime
-        timestamp = datetime.now().strftime("%H:%M:%S")
-        self.connection_log.append(f"[{timestamp}] {message}")
-        # Auto-scroll to bottom
-        cursor = self.connection_log.textCursor()
-        cursor.movePosition(QTextCursor.MoveOperation.End)
-        self.connection_log.setTextCursor(cursor)
-
-    def update_component_status(self, target_ip: str):
-        """Ping all components and update their status indicators (in background thread)."""
-        logger.info(f"update_component_status called with target_ip={target_ip}")
-        self.log_connection_event("Checking component status...")
-
-        # Update Main Board IP to target IP
-        self.component_status['Main Board']['ip'] = target_ip
-        logger.debug(f"Main Board IP set to: {target_ip}")
-
-        # Main board is connected (we're calling this after successful connection)
-        logger.debug("Setting Main Board status to online (green)")
-        self.on_component_status_update('Main Board', True)
-
-        # Stop any existing status check thread
-        if self.component_status_thread and self.component_status_thread.isRunning():
-            logger.debug("Stopping existing component status thread")
-            self.component_status_thread.wait()
-
-        # Start background thread to SSH into main board and ping internal components
-        logger.info(f"Starting SSH-based component status checks via {target_ip}")
-        self.component_status_thread = ComponentStatusThread(self.component_status, target_ip)
-        self.component_status_thread.status_update.connect(self.on_component_status_update)
-        self.component_status_thread.check_complete.connect(self.on_component_check_complete)
-        self.component_status_thread.start()
-        logger.debug("Component status thread started")
-
-    def on_component_status_update(self, component_name: str, is_online: bool):
-        """Update a single component status indicator."""
-        logger.debug(f"on_component_status_update: {component_name} = {'Online' if is_online else 'Offline'}")
-        label = self.component_status[component_name]['label']
-
-        if is_online:
-            # Green dot - component responding
-            label.setStyleSheet("""
-                font-size: 14pt;
-                color: #44ff44;
-                padding: 0px;
-            """)
-            self.log_connection_event(f"{component_name}: Online")
-        else:
-            # Red dot - component not responding
-            label.setStyleSheet("""
-                font-size: 14pt;
-                color: #ff4444;
-                padding: 0px;
-            """)
-            self.log_connection_event(f"{component_name}: Offline")
-
-    def on_component_check_complete(self):
-        """Called when all component status checks are complete."""
-        self.log_connection_event("Component status check complete")
 
     def stop_all_video_streams(self):
         """Stop all active video streams."""
@@ -1078,7 +732,6 @@ class CombinedControlTab(QWidget):
             self.video_grid.addWidget(self.no_cameras_label, 0, 0)
         self.no_cameras_label.show()
 
-        self.log_connection_event("All video streams stopped")
         logger.info("All video streams stopped and hidden")
 
     def closeEvent(self, event):
