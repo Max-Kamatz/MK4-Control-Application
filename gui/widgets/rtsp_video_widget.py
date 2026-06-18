@@ -91,6 +91,9 @@ class VideoStreamThread(QThread):
 
 
 class RTSPVideoWidget(QWidget):
+    # Signal emitted when connection status changes
+    status_changed = pyqtSignal(str)  # Emits status string: 'connected', 'disconnected', etc.
+
     def __init__(self, rtsp_url: str, label: str, auto_start: bool = True):
         super().__init__()
         self.rtsp_url = rtsp_url
@@ -161,13 +164,32 @@ class RTSPVideoWidget(QWidget):
         self.status_label.setText(text)
         self.status_label.setStyleSheet(f"color: {color}; font-size: 10pt;")
 
+        # Emit status change signal for external monitoring
+        self.status_changed.emit(status)
+
     def set_unavailable(self):
         """Mark this camera as unavailable (not connected to payload)."""
         self.video_label.setText("Camera Not Available\n\nThis camera is not connected to the payload.")
         self.update_status("unavailable")
 
     def closeEvent(self, event):
-        if hasattr(self, 'stream_thread'):
-            self.stream_thread.stop()
-            self.stream_thread.wait(2000)  # Wait max 2 seconds for thread to finish
+        """
+        Clean up on close.
+
+        NOTE: Do NOT call wait() - thread may be blocked in OpenCV operations.
+        Let it terminate asynchronously.
+        """
+        if hasattr(self, 'stream_thread') and self.stream_thread:
+            if self.stream_thread.isRunning():
+                try:
+                    # Disconnect signals to prevent crashes
+                    self.stream_thread.frame_ready.disconnect()
+                    self.stream_thread.status_changed.disconnect()
+                except:
+                    pass  # Already disconnected
+
+                # Stop thread (non-blocking)
+                self.stream_thread.stop()
+                logger.info(f"Video stream thread stop signal sent for {self.label_text}")
+
         event.accept()

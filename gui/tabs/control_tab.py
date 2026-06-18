@@ -1,5 +1,10 @@
+"""
+gui/tabs/control_tab.py
+Control tab with LEFT side scrollable settings (480px fixed) and RIGHT side expanding video feeds.
+"""
+
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
-                             QLabel, QSlider, QPushButton, QGroupBox, QLineEdit)
+                             QLabel, QSlider, QPushButton, QGroupBox, QLineEdit, QScrollArea)
 from PyQt6.QtCore import Qt, pyqtSignal
 from utils.constants import load_config, PAN_MIN, PAN_MAX, TILT_MIN, TILT_MAX
 from utils.logger import setup_logger
@@ -10,30 +15,125 @@ class ControlTab(QWidget):
     pan_tilt_changed = pyqtSignal(float, float)
     home_requested = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, video_manager=None):
         super().__init__()
         self.config = load_config()
         self.commanded_pan = 0.0
         self.commanded_tilt = 0.0
         self.actual_pan = 0.0
         self.actual_tilt = 0.0
+        self.video_manager = video_manager
+        self.video_placeholder = None  # Will hold the shared video display
         self.init_ui()
 
     def init_ui(self):
         main_layout = QHBoxLayout()
+        main_layout.setSpacing(0)
+        main_layout.setContentsMargins(0, 0, 0, 0)
 
-        control_group = self.create_control_section()
-        position_group = self.create_position_display()
-        status_group = self.create_status_section()
+        # Left side: Control settings (fixed width 480px with scroll)
+        left_widget = self.create_control_section()
 
-        main_layout.addWidget(control_group, 3)
-        main_layout.addWidget(position_group, 1)
-        main_layout.addWidget(status_group, 1)
+        # Right side: Video streams (expands to fill space)
+        right_widget = self.create_video_section()
+
+        # Use simple horizontal layout - control panel has fixed width, video expands
+        main_layout.addWidget(left_widget, 0)   # Control panel fixed width (no stretch)
+        main_layout.addWidget(right_widget, 1)  # Video expands (stretch factor 1)
 
         self.setLayout(main_layout)
         logger.info("Control tab initialized")
 
-    def create_control_section(self) -> QGroupBox:
+    def create_control_section(self) -> QWidget:
+        """Create left side control section with fixed width and scrolling."""
+        # Container widget with fixed width
+        container = QWidget()
+        container.setFixedWidth(480)
+        container_layout = QVBoxLayout()
+        container_layout.setContentsMargins(0, 0, 0, 0)
+
+        # Scroll area for settings
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+
+        # Scrollable content widget
+        scroll_content = QWidget()
+        layout = QVBoxLayout()
+        layout.setSpacing(10)
+        layout.setContentsMargins(10, 10, 10, 10)
+
+        # Status section with IP and connection
+        status_group = self.create_status_section()
+        layout.addWidget(status_group)
+
+        # Gimbal control section
+        control_group = self.create_gimbal_control()
+        layout.addWidget(control_group)
+
+        # Position feedback section
+        position_group = self.create_position_display()
+        layout.addWidget(position_group)
+
+        layout.addStretch()
+
+        scroll_content.setLayout(layout)
+        scroll.setWidget(scroll_content)
+
+        container_layout.addWidget(scroll)
+        container.setLayout(container_layout)
+
+        return container
+
+    def create_status_section(self) -> QGroupBox:
+        """Create connection status section."""
+        group = QGroupBox("Connection Status")
+        layout = QVBoxLayout()
+
+        # IP Address input
+        ip_label = QLabel("Target IP Address:")
+        ip_label.setStyleSheet("font-size: 10pt; font-weight: bold;")
+        layout.addWidget(ip_label)
+
+        self.ip_input = QLineEdit()
+        self.ip_input.setText(self.config['network']['target_ip'])
+        self.ip_input.setPlaceholderText("192.168.1.100")
+        self.ip_input.setStyleSheet("""
+            QLineEdit {
+                padding: 8px;
+                font-size: 11pt;
+                font-family: 'Courier New', monospace;
+                background-color: #2b2b2b;
+                border: 2px solid #555;
+                border-radius: 4px;
+            }
+            QLineEdit:focus {
+                border: 2px solid #2a82da;
+            }
+        """)
+        layout.addWidget(self.ip_input)
+
+        self.connection_indicator = QLabel("● Disconnected")
+        self.connection_indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.connection_indicator.setStyleSheet("""
+            font-size: 14pt;
+            font-weight: bold;
+            color: #ff4444;
+            padding: 20px;
+        """)
+
+        self.reconnect_button = QPushButton("Connect")
+        self.reconnect_button.setStyleSheet("padding: 10px; font-size: 11pt;")
+
+        layout.addWidget(self.connection_indicator)
+        layout.addWidget(self.reconnect_button)
+
+        group.setLayout(layout)
+        return group
+
+    def create_gimbal_control(self) -> QGroupBox:
+        """Create gimbal control section."""
         group = QGroupBox("Gimbal Control")
         layout = QVBoxLayout()
 
@@ -88,7 +188,6 @@ class ControlTab(QWidget):
         layout.addLayout(tilt_layout)
         layout.addSpacing(20)
         layout.addWidget(self.home_button)
-        layout.addStretch()
 
         self.pan_slider.valueChanged.connect(self.on_pan_changed)
         self.tilt_slider.valueChanged.connect(self.on_tilt_changed)
@@ -98,6 +197,7 @@ class ControlTab(QWidget):
         return group
 
     def create_position_display(self) -> QGroupBox:
+        """Create position feedback section."""
         group = QGroupBox("Position Feedback")
         layout = QGridLayout()
 
@@ -130,51 +230,31 @@ class ControlTab(QWidget):
         group.setLayout(layout)
         return group
 
-    def create_status_section(self) -> QGroupBox:
-        group = QGroupBox("Connection Status")
+    def create_video_section(self) -> QWidget:
+        """Create placeholder for shared video display manager."""
+        self.video_placeholder = QWidget()
+        self.video_placeholder.setObjectName("video_container")
         layout = QVBoxLayout()
+        layout.setSpacing(0)
+        layout.setContentsMargins(10, 10, 10, 10)
+        self.video_placeholder.setLayout(layout)
+        return self.video_placeholder
 
-        # IP Address input
-        ip_label = QLabel("Target IP Address:")
-        ip_label.setStyleSheet("font-size: 10pt; font-weight: bold;")
-        layout.addWidget(ip_label)
+    def set_video_display(self, video_manager):
+        """Called when this tab becomes active - reparent video display here."""
+        if video_manager and self.video_placeholder:
+            # Clear placeholder
+            while self.video_placeholder.layout().count():
+                item = self.video_placeholder.layout().takeAt(0)
+                if item.widget():
+                    item.widget().setParent(None)
 
-        self.ip_input = QLineEdit()
-        self.ip_input.setText(self.config['network']['target_ip'])
-        self.ip_input.setPlaceholderText("192.168.1.100")
-        self.ip_input.setStyleSheet("""
-            QLineEdit {
-                padding: 8px;
-                font-size: 11pt;
-                font-family: 'Courier New', monospace;
-                background-color: #2b2b2b;
-                border: 2px solid #555;
-                border-radius: 4px;
-            }
-            QLineEdit:focus {
-                border: 2px solid #2a82da;
-            }
-        """)
-        layout.addWidget(self.ip_input)
-
-        self.connection_indicator = QLabel("● Disconnected")
-        self.connection_indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.connection_indicator.setStyleSheet("""
-            font-size: 14pt;
-            font-weight: bold;
-            color: #ff4444;
-            padding: 20px;
-        """)
-
-        self.reconnect_button = QPushButton("Connect")
-        self.reconnect_button.setStyleSheet("padding: 10px; font-size: 11pt;")
-
-        layout.addWidget(self.connection_indicator)
-        layout.addWidget(self.reconnect_button)
-        layout.addStretch()
-
-        group.setLayout(layout)
-        return group
+            # Reparent video manager's display widget
+            display_widget = video_manager.get_display_widget()
+            display_widget.setParent(self.video_placeholder)
+            self.video_placeholder.layout().addWidget(display_widget)
+            display_widget.show()
+            logger.debug(f"Video display reparented to {self.__class__.__name__}")
 
     def on_pan_changed(self, value: int):
         self.commanded_pan = float(value)
@@ -224,3 +304,7 @@ class ControlTab(QWidget):
             """)
             self.reconnect_button.setText("Connect")
             self.ip_input.setEnabled(True)  # Enable IP changes when disconnected
+
+
+
+

@@ -6,11 +6,9 @@ Combined video display and PTZ control tab - shows streams and trackpad control 
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
                              QGroupBox, QLabel, QGridLayout, QPushButton, QLineEdit, QSlider, QButtonGroup)
 from PyQt6.QtCore import Qt, pyqtSignal
-from gui.widgets.rtsp_video_widget import RTSPVideoWidget
 from gui.widgets.ptz_trackpad import PTZControlWidget
 from utils.constants import load_config
 from utils.logger import setup_logger
-from utils.camera_discovery import discover_cameras
 
 logger = setup_logger()
 
@@ -26,12 +24,10 @@ class CombinedControlTab(QWidget):
     pan_tilt_stop = pyqtSignal()
 
     # Zoom signals
-    zoom_command = pyqtSignal(int)      # +1 = in, -1 = out
-    zoom_stop = pyqtSignal()
+    zoom_command = pyqtSignal(int)      # +1 = in, -1 = out, 0 = stop
 
     # Focus signals
-    focus_command = pyqtSignal(int)     # +1 = far, -1 = near
-    focus_stop = pyqtSignal()
+    focus_command = pyqtSignal(int)     # +1 = far, -1 = near, 0 = stop
 
     # Home
     home_requested = pyqtSignal()
@@ -53,12 +49,13 @@ class CombinedControlTab(QWidget):
     color_palette_changed = pyqtSignal(int, int)  # camera, palette
     color_filter_changed = pyqtSignal(int, bool)  # camera, enable
 
-    def __init__(self):
+    def __init__(self, video_manager=None):
         super().__init__()
         self.config = load_config()
         self.actual_pan = None
         self.actual_tilt = None
-        self.camera_availability = {}  # Track which cameras are available
+        self.video_manager = video_manager
+        self.video_placeholder = None  # Will hold the shared video display
         self.init_ui()
 
     def init_ui(self):
@@ -81,66 +78,30 @@ class CombinedControlTab(QWidget):
         logger.info("Combined control tab initialized")
 
     def create_video_section(self) -> QWidget:
-        """Create video display section with dynamic camera layout."""
-        self.video_widget = QWidget()
-        self.video_widget.setObjectName("video_container")
+        """Create placeholder for shared video display manager."""
+        self.video_placeholder = QWidget()
+        self.video_placeholder.setObjectName("video_container")
+        layout = QVBoxLayout()
+        layout.setSpacing(0)
+        layout.setContentsMargins(10, 10, 10, 10)
+        self.video_placeholder.setLayout(layout)
+        return self.video_placeholder
 
-        self.video_layout = QVBoxLayout()
-        self.video_layout.setSpacing(5)
-        self.video_layout.setContentsMargins(10, 10, 10, 10)
+    def set_video_display(self, video_manager):
+        """Called when this tab becomes active - reparent video display here."""
+        if video_manager and self.video_placeholder:
+            # Clear placeholder
+            while self.video_placeholder.layout().count():
+                item = self.video_placeholder.layout().takeAt(0)
+                if item.widget():
+                    item.widget().setParent(None)
 
-        # Create placeholder for dynamic video grid
-        self.video_grid_widget = QWidget()
-        self.video_grid_widget.setObjectName("video_grid")
-        self.video_grid = QGridLayout()
-        self.video_grid.setSpacing(10)
-        self.video_grid_widget.setLayout(self.video_grid)
-        self.video_layout.addWidget(self.video_grid_widget)
-
-        # Create video widgets with video_grid_widget as parent but don't add to layout yet
-        thermal_config = self.config['rtsp_streams']['thermal']
-        self.thermal_widget = RTSPVideoWidget(
-            thermal_config['url'],
-            thermal_config['label'],
-            auto_start=False  # Don't auto-connect on startup
-        )
-        self.thermal_widget.setParent(self.video_grid_widget)
-
-        daylight_config = self.config['rtsp_streams']['daylight']
-        self.daylight_widget = RTSPVideoWidget(
-            daylight_config['url'],
-            daylight_config['label'],
-            auto_start=False  # Don't auto-connect on startup
-        )
-        self.daylight_widget.setParent(self.video_grid_widget)
-
-        swir_config = self.config['rtsp_streams']['swir']
-        self.swir_widget = RTSPVideoWidget(
-            swir_config['url'],
-            swir_config['label'],
-            auto_start=False  # Don't auto-connect on startup
-        )
-        self.swir_widget.setParent(self.video_grid_widget)
-
-        # Initially hide all widgets - they'll be added dynamically after discovery
-        self.thermal_widget.hide()
-        self.daylight_widget.hide()
-        self.swir_widget.hide()
-
-        # Show placeholder message
-        self.no_cameras_label = QLabel("Connect to a payload to view camera feeds")
-        self.no_cameras_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.no_cameras_label.setStyleSheet("""
-            font-size: 12pt;
-            color: #a0a8b0;
-            padding: 50px;
-            background-color: transparent;
-            border: none;
-        """)
-        self.video_grid.addWidget(self.no_cameras_label, 0, 0)
-
-        self.video_widget.setLayout(self.video_layout)
-        return self.video_widget
+            # Reparent video manager's display widget
+            display_widget = video_manager.get_display_widget()
+            display_widget.setParent(self.video_placeholder)
+            self.video_placeholder.layout().addWidget(display_widget)
+            display_widget.show()
+            logger.debug("Video display reparented to Combined Control tab")
 
     def create_control_section(self) -> QWidget:
         """Create PTZ control section."""
@@ -166,8 +127,8 @@ class CombinedControlTab(QWidget):
         camera_buttons_layout = QHBoxLayout()
         camera_buttons_layout.setSpacing(5)
 
-        # Camera 1 - Daylight button
-        self.camera1_button = QPushButton("Daylight")
+        # Camera 1 - Thermal button
+        self.camera1_button = QPushButton("Thermal")
         self.camera1_button.setCheckable(True)
         self.camera1_button.setChecked(True)  # Default selected
         self.camera1_button.setProperty("camera", "Camera1")
@@ -193,8 +154,8 @@ class CombinedControlTab(QWidget):
         self.camera_button_group.addButton(self.camera1_button, 1)
         camera_buttons_layout.addWidget(self.camera1_button)
 
-        # Camera 2 - Thermal button
-        self.camera2_button = QPushButton("Thermal")
+        # Camera 2 - Daylight button
+        self.camera2_button = QPushButton("Daylight")
         self.camera2_button.setCheckable(True)
         self.camera2_button.setProperty("camera", "Camera2")
         self.camera2_button.setStyleSheet("""
@@ -434,10 +395,11 @@ class CombinedControlTab(QWidget):
         logger.debug(f"Zoom {'in' if direction > 0 else 'out'} pressed for {camera}")
 
     def on_zoom_released(self):
-        """Handle zoom button release."""
+        """Handle zoom button release - send camera-specific stop."""
         camera = self.get_selected_camera()
-        self.zoom_stop.emit()
-        logger.debug(f"Zoom released for {camera}")
+        # Emit 0 direction to send ZoomStop command for this specific camera
+        self.zoom_command.emit(0)
+        logger.debug(f"Zoom stop for {camera}")
 
     def on_focus_pressed(self, direction: int):
         """Handle focus button press."""
@@ -446,10 +408,11 @@ class CombinedControlTab(QWidget):
         logger.debug(f"Focus {'far' if direction > 0 else 'near'} pressed for {camera}")
 
     def on_focus_released(self):
-        """Handle focus button release."""
+        """Handle focus button release - send camera-specific stop."""
         camera = self.get_selected_camera()
-        self.focus_stop.emit()
-        logger.debug(f"Focus released for {camera}")
+        # Emit 0 direction to send FocusStop command for this specific camera
+        self.focus_command.emit(0)
+        logger.debug(f"Focus stop for {camera}")
 
     def on_pan_speed_changed(self, value: int):
         """Handle pan speed slider change."""
@@ -487,6 +450,10 @@ class CombinedControlTab(QWidget):
             tilt_speed = 0.5  # Default speed
         else:
             tilt_speed = abs(tilt_speed)  # Always positive for up
+
+        # Update commanded label
+        self.cmd_tilt_label.setText(f"+{tilt_speed:.1f} °/s")
+
         self.tilt_speed_changed.emit(tilt_speed)
         logger.debug(f"Arrow UP: Tilt speed {tilt_speed:.2f}")
 
@@ -498,6 +465,10 @@ class CombinedControlTab(QWidget):
             tilt_speed = -0.5  # Default speed
         else:
             tilt_speed = -abs(tilt_speed)  # Always negative for down
+
+        # Update commanded label
+        self.cmd_tilt_label.setText(f"{tilt_speed:.1f} °/s")
+
         self.tilt_speed_changed.emit(tilt_speed)
         logger.debug(f"Arrow DOWN: Tilt speed {tilt_speed:.2f}")
 
@@ -509,6 +480,10 @@ class CombinedControlTab(QWidget):
             pan_speed = -0.5  # Default speed
         else:
             pan_speed = -abs(pan_speed)  # Always negative for left
+
+        # Update commanded label
+        self.cmd_pan_label.setText(f"{pan_speed:.1f} °/s")
+
         self.pan_speed_changed.emit(pan_speed)
         logger.debug(f"Arrow LEFT: Pan speed {pan_speed:.2f}")
 
@@ -520,11 +495,19 @@ class CombinedControlTab(QWidget):
             pan_speed = 0.5  # Default speed
         else:
             pan_speed = abs(pan_speed)  # Always positive for right
+
+        # Update commanded label
+        self.cmd_pan_label.setText(f"+{pan_speed:.1f} °/s")
+
         self.pan_speed_changed.emit(pan_speed)
         logger.debug(f"Arrow RIGHT: Pan speed {pan_speed:.2f}")
 
     def on_arrow_released(self):
         """Handle arrow button released - stop movement."""
+        # Update commanded labels
+        self.cmd_pan_label.setText("0.0 °/s")
+        self.cmd_tilt_label.setText("0.0 °/s")
+
         self.pan_speed_changed.emit(0.0)
         self.tilt_speed_changed.emit(0.0)
         logger.debug("Arrow released - stopped")
@@ -536,205 +519,3 @@ class CombinedControlTab(QWidget):
         self.actual_pan_label.setText(f"{pan:.1f}°")
         self.actual_tilt_label.setText(f"{tilt:.1f}°")
 
-    def rebuild_video_layout(self):
-        """Rebuild video layout based on available cameras."""
-        logger.info(f"Rebuilding video layout. Camera availability: {self.camera_availability}")
-
-        # Clear existing layout - remove all widgets
-        while self.video_grid.count():
-            item = self.video_grid.takeAt(0)
-            if item.widget():
-                widget = item.widget()
-                widget.setParent(None)  # Remove from layout hierarchy
-                widget.hide()  # Ensure it's hidden
-
-        # Explicitly hide all camera widgets (they keep their parent, just removed from layout)
-        self.thermal_widget.hide()
-        logger.debug(f"Thermal widget hidden: {self.thermal_widget.isHidden()}, visible: {self.thermal_widget.isVisible()}")
-
-        self.daylight_widget.hide()
-        logger.debug(f"Daylight widget hidden: {self.daylight_widget.isHidden()}, visible: {self.daylight_widget.isVisible()}")
-
-        self.swir_widget.hide()
-        logger.debug(f"SWIR widget hidden: {self.swir_widget.isHidden()}, visible: {self.swir_widget.isVisible()}, parent: {self.swir_widget.parent()}")
-
-        self.no_cameras_label.hide()
-
-        # Get list of available cameras with their widgets
-        available_cameras = []
-        if self.camera_availability.get('thermal', False):
-            available_cameras.append(('Thermal', self.thermal_widget))
-        if self.camera_availability.get('daylight', False):
-            available_cameras.append(('Daylight', self.daylight_widget))
-        if self.camera_availability.get('swir', False):
-            available_cameras.append(('SWIR', self.swir_widget))
-
-        num_cameras = len(available_cameras)
-        logger.info(f"Number of available cameras: {num_cameras}")
-
-        if num_cameras == 0:
-            # No cameras available - show message
-            self.no_cameras_label.setText("No cameras available")
-            self.video_grid.addWidget(self.no_cameras_label, 0, 0)
-            self.no_cameras_label.show()
-            logger.info("No cameras available - showing placeholder")
-
-        elif num_cameras == 1:
-            # One camera - full width
-            name, widget = available_cameras[0]
-            self.video_grid.addWidget(widget, 0, 0)
-            widget.show()
-            logger.info(f"Layout: 1 camera ({name}) - full width")
-
-        elif num_cameras == 2:
-            # Two cameras - side by side
-            name1, widget1 = available_cameras[0]
-            name2, widget2 = available_cameras[1]
-            self.video_grid.addWidget(widget1, 0, 0)
-            self.video_grid.addWidget(widget2, 0, 1)
-            widget1.show()
-            widget2.show()
-            logger.info(f"Layout: 2 cameras ({name1}, {name2}) - side by side")
-            logger.debug(f"After layout - SWIR visible: {self.swir_widget.isVisible()}, parent: {self.swir_widget.parent()}")
-
-        elif num_cameras == 3:
-            # Three cameras - 2x2 grid (thermal and daylight on top, swir bottom left)
-            name1, widget1 = available_cameras[0]
-            name2, widget2 = available_cameras[1]
-            name3, widget3 = available_cameras[2]
-            self.video_grid.addWidget(widget1, 0, 0)
-            self.video_grid.addWidget(widget2, 0, 1)
-            self.video_grid.addWidget(widget3, 1, 0)
-            widget1.show()
-            widget2.show()
-            widget3.show()
-            logger.info(f"Layout: 3 cameras ({name1}, {name2}, {name3}) - 2x2 grid")
-
-    def update_video_streams_ip(self, new_ip: str):
-        """Update video stream URLs with new IP address and discover available cameras."""
-        logger.info(f"Discovering cameras at {new_ip}...")
-
-        # Build camera configs with new IP
-        camera_configs = {
-            'thermal': {'url': f"rtsp://{new_ip}:7031/Cam1Stream1", 'label': 'Thermal Camera'},
-            'daylight': {'url': f"rtsp://{new_ip}:7031/Cam2Stream1", 'label': 'Daylight Camera'},
-            'swir': {'url': f"rtsp://{new_ip}:7031/Cam3Stream1", 'label': 'SWIR Camera'}
-        }
-
-        # Discover which cameras are available (checks actual RTSP stream, not just port)
-        logger.info(f"Discovering cameras at {new_ip}...")
-        self.camera_availability = discover_cameras(camera_configs, timeout=3.0)
-
-        # Log availability
-        for cam_name, available in self.camera_availability.items():
-            status = "Available" if available else "Not available"
-            logger.info(f"  {cam_name.capitalize()}: {status}")
-
-        # Update URLs for all cameras, but only START streams for available ones
-        thermal_url = camera_configs['thermal']['url']
-        daylight_url = camera_configs['daylight']['url']
-        swir_url = camera_configs['swir']['url']
-
-        # Thermal camera
-        if hasattr(self, 'thermal_widget'):
-            if hasattr(self.thermal_widget, 'stream_thread') and self.thermal_widget.stream_thread:
-                if self.camera_availability.get('thermal', False):
-                    self.thermal_widget.stream_thread.change_url(thermal_url)
-                else:
-                    logger.info("Stopping thermal camera stream - not available")
-                    # Stop the existing stream thread
-                    self.thermal_widget.stream_thread.stop()
-                    self.thermal_widget.set_unavailable()
-            else:
-                # First time - start only if available
-                self.thermal_widget.rtsp_url = thermal_url
-                if self.camera_availability.get('thermal', False):
-                    self.thermal_widget.start_stream()
-                else:
-                    logger.info("Thermal camera not available - not starting stream")
-                    self.thermal_widget.set_unavailable()
-
-        # Daylight camera
-        if hasattr(self, 'daylight_widget'):
-            if hasattr(self.daylight_widget, 'stream_thread') and self.daylight_widget.stream_thread:
-                if self.camera_availability.get('daylight', False):
-                    self.daylight_widget.stream_thread.change_url(daylight_url)
-                else:
-                    logger.info("Stopping daylight camera stream - not available")
-                    # Stop the existing stream thread
-                    self.daylight_widget.stream_thread.stop()
-                    self.daylight_widget.set_unavailable()
-            else:
-                self.daylight_widget.rtsp_url = daylight_url
-                if self.camera_availability.get('daylight', False):
-                    self.daylight_widget.start_stream()
-                else:
-                    logger.info("Daylight camera not available - not starting stream")
-                    self.daylight_widget.set_unavailable()
-
-        # SWIR camera
-        if hasattr(self, 'swir_widget'):
-            if hasattr(self.swir_widget, 'stream_thread') and self.swir_widget.stream_thread:
-                if self.camera_availability.get('swir', False):
-                    self.swir_widget.stream_thread.change_url(swir_url)
-                else:
-                    logger.info("Stopping SWIR camera stream - not available")
-                    # Stop the existing stream thread
-                    self.swir_widget.stream_thread.stop()
-                    self.swir_widget.set_unavailable()
-            else:
-                self.swir_widget.rtsp_url = swir_url
-                if self.camera_availability.get('swir', False):
-                    self.swir_widget.start_stream()
-                else:
-                    logger.info("SWIR camera not available - not starting stream")
-                    self.swir_widget.set_unavailable()
-
-        # Count available cameras and rebuild layout
-        available_count = sum(1 for v in self.camera_availability.values() if v)
-        logger.info(f"Video streams updated: {available_count}/3 cameras available")
-
-        # Rebuild the video layout based on available cameras
-        self.rebuild_video_layout()
-
-    def stop_all_video_streams(self):
-        """Stop all active video streams."""
-        logger.info("Stopping all video streams...")
-
-        # Stop thermal camera
-        if hasattr(self, 'thermal_widget') and hasattr(self.thermal_widget, 'stream_thread'):
-            if self.thermal_widget.stream_thread and self.thermal_widget.stream_thread.isRunning():
-                self.thermal_widget.stream_thread.stop()
-                self.thermal_widget.stream_thread.wait(2000)
-                logger.info("Thermal camera stream stopped")
-
-        # Stop daylight camera
-        if hasattr(self, 'daylight_widget') and hasattr(self.daylight_widget, 'stream_thread'):
-            if self.daylight_widget.stream_thread and self.daylight_widget.stream_thread.isRunning():
-                self.daylight_widget.stream_thread.stop()
-                self.daylight_widget.stream_thread.wait(2000)
-                logger.info("Daylight camera stream stopped")
-
-        # Stop SWIR camera
-        if hasattr(self, 'swir_widget') and hasattr(self.swir_widget, 'stream_thread'):
-            if self.swir_widget.stream_thread and self.swir_widget.stream_thread.isRunning():
-                self.swir_widget.stream_thread.stop()
-                self.swir_widget.stream_thread.wait(2000)
-                logger.info("SWIR camera stream stopped")
-
-        # Hide all video widgets
-        self.thermal_widget.hide()
-        self.daylight_widget.hide()
-        self.swir_widget.hide()
-
-        # Show placeholder message
-        if self.no_cameras_label.parent() is None:
-            self.video_grid.addWidget(self.no_cameras_label, 0, 0)
-        self.no_cameras_label.show()
-
-        logger.info("All video streams stopped and hidden")
-
-    def closeEvent(self, event):
-        """Clean up video streams on close."""
-        self.stop_all_video_streams()
-        event.accept()
