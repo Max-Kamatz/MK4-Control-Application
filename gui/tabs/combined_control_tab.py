@@ -415,18 +415,24 @@ class CombinedControlTab(QWidget):
         logger.debug(f"Focus stop for {camera}")
 
     def on_pan_speed_changed(self, value: int):
-        """Handle pan speed slider change."""
-        speed = value / 100.0  # Convert to 0.0 to 1.0
-        self.pan_speed_label.setText(f"{speed:.2f}")
-        self.pan_speed_changed.emit(speed)
-        logger.debug(f"Pan speed: {speed:.2f}")
+        """Handle pan speed slider change - displays max speed for arrow buttons."""
+        normalized = value / 100.0  # Convert to 0.0 to 1.0
+        max_pan_speed = 20.0  # degrees/second
+        actual_speed = normalized * max_pan_speed
+        self.pan_speed_label.setText(f"{actual_speed:.1f} °/s")
+        # NOTE: We don't emit pan_speed_changed here - slider just stores a value
+        # Arrow buttons read the slider and emit pan_speed_changed when pressed
+        logger.debug(f"Pan speed slider: {actual_speed:.1f} °/s ({normalized:.0%})")
 
     def on_tilt_speed_changed(self, value: int):
-        """Handle tilt speed slider change."""
-        speed = value / 100.0  # Convert to 0.0 to 1.0
-        self.tilt_speed_label.setText(f"{speed:.2f}")
-        self.tilt_speed_changed.emit(speed)
-        logger.debug(f"Tilt speed: {speed:.2f}")
+        """Handle tilt speed slider change - displays max speed for arrow buttons."""
+        normalized = value / 100.0  # Convert to 0.0 to 1.0
+        max_tilt_speed = 10.0  # degrees/second
+        actual_speed = normalized * max_tilt_speed
+        self.tilt_speed_label.setText(f"{actual_speed:.1f} °/s")
+        # NOTE: We don't emit tilt_speed_changed here - slider just stores a value
+        # Arrow buttons read the slider and emit tilt_speed_changed when pressed
+        logger.debug(f"Tilt speed slider: {actual_speed:.1f} °/s ({normalized:.0%})")
 
     def on_zoom_speed_changed(self, value: int):
         """Handle zoom speed slider change."""
@@ -444,63 +450,71 @@ class CombinedControlTab(QWidget):
 
     def on_arrow_up_pressed(self):
         """Handle up arrow pressed - use tilt slider value."""
-        tilt_speed = self.tilt_speed_slider.value() / 100.0
-        # Use positive speed for up, or default if slider is at 0
-        if tilt_speed == 0:
-            tilt_speed = 0.5  # Default speed
+        slider_value = self.tilt_speed_slider.value() / 100.0  # 0.0 to 1.0
+        max_tilt_speed = 10.0  # degrees/second (same as trackpad)
+
+        # Scale slider value to actual speed range
+        if slider_value == 0:
+            tilt_speed = 5.0  # Default speed (50% of max)
         else:
-            tilt_speed = abs(tilt_speed)  # Always positive for up
+            tilt_speed = slider_value * max_tilt_speed  # Scale to 0-10 deg/s
 
         # Update commanded label
         self.cmd_tilt_label.setText(f"+{tilt_speed:.1f} °/s")
 
         self.tilt_speed_changed.emit(tilt_speed)
-        logger.debug(f"Arrow UP: Tilt speed {tilt_speed:.2f}")
+        logger.debug(f"Arrow UP: Tilt speed {tilt_speed:.1f} °/s (slider: {slider_value:.2f})")
 
     def on_arrow_down_pressed(self):
         """Handle down arrow pressed - use tilt slider value."""
-        tilt_speed = self.tilt_speed_slider.value() / 100.0
-        # Use negative speed for down, or default if slider is at 0
-        if tilt_speed == 0:
-            tilt_speed = -0.5  # Default speed
+        slider_value = self.tilt_speed_slider.value() / 100.0  # 0.0 to 1.0
+        max_tilt_speed = 10.0  # degrees/second (same as trackpad)
+
+        # Scale slider value to actual speed range
+        if slider_value == 0:
+            tilt_speed = -5.0  # Default speed (50% of max)
         else:
-            tilt_speed = -abs(tilt_speed)  # Always negative for down
+            tilt_speed = -(slider_value * max_tilt_speed)  # Scale to 0-10 deg/s, negate for down
 
         # Update commanded label
         self.cmd_tilt_label.setText(f"{tilt_speed:.1f} °/s")
 
         self.tilt_speed_changed.emit(tilt_speed)
-        logger.debug(f"Arrow DOWN: Tilt speed {tilt_speed:.2f}")
+        logger.debug(f"Arrow DOWN: Tilt speed {tilt_speed:.1f} °/s (slider: {slider_value:.2f})")
 
     def on_arrow_left_pressed(self):
         """Handle left arrow pressed - use pan slider value."""
-        pan_speed = self.pan_speed_slider.value() / 100.0
-        # Use negative speed for left, or default if slider is at 0
-        if pan_speed == 0:
-            pan_speed = -0.5  # Default speed
+        slider_value = self.pan_speed_slider.value() / 100.0  # 0.0 to 1.0
+        max_pan_speed = 20.0  # degrees/second (same as trackpad)
+
+        # Scale slider value to actual speed range
+        if slider_value == 0:
+            pan_speed = -10.0  # Default speed (50% of max)
         else:
-            pan_speed = -abs(pan_speed)  # Always negative for left
+            pan_speed = -(slider_value * max_pan_speed)  # Scale to 0-20 deg/s, negate for left
 
         # Update commanded label
         self.cmd_pan_label.setText(f"{pan_speed:.1f} °/s")
 
         self.pan_speed_changed.emit(pan_speed)
-        logger.debug(f"Arrow LEFT: Pan speed {pan_speed:.2f}")
+        logger.debug(f"Arrow LEFT: Pan speed {pan_speed:.1f} °/s (slider: {slider_value:.2f})")
 
     def on_arrow_right_pressed(self):
         """Handle right arrow pressed - use pan slider value."""
-        pan_speed = self.pan_speed_slider.value() / 100.0
-        # Use positive speed for right, or default if slider is at 0
-        if pan_speed == 0:
-            pan_speed = 0.5  # Default speed
+        slider_value = self.pan_speed_slider.value() / 100.0  # 0.0 to 1.0
+        max_pan_speed = 20.0  # degrees/second (same as trackpad)
+
+        # Scale slider value to actual speed range
+        if slider_value == 0:
+            pan_speed = 10.0  # Default speed (50% of max)
         else:
-            pan_speed = abs(pan_speed)  # Always positive for right
+            pan_speed = slider_value * max_pan_speed  # Scale to 0-20 deg/s
 
         # Update commanded label
         self.cmd_pan_label.setText(f"+{pan_speed:.1f} °/s")
 
         self.pan_speed_changed.emit(pan_speed)
-        logger.debug(f"Arrow RIGHT: Pan speed {pan_speed:.2f}")
+        logger.debug(f"Arrow RIGHT: Pan speed {pan_speed:.1f} °/s (slider: {slider_value:.2f})")
 
     def on_arrow_released(self):
         """Handle arrow button released - stop movement."""

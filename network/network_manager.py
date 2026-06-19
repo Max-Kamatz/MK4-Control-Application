@@ -528,6 +528,30 @@ class NetworkManager:
         use_tcp = self.tcp_writer is not None
         return await self.send_command(command, use_udp=not use_tcp)
 
+    async def send_zoom_speed(self, speed: int, camera: int) -> bool:
+        """
+        Set zoom speed for a camera.
+
+        Args:
+            speed: Speed value [0-100%] of max hardware zoom speed
+            camera: Camera number (1, 2, or 3)
+        """
+        command = self.eup_protocol.build_zoom_speed(speed, camera)
+        use_tcp = self.tcp_writer is not None
+        return await self.send_command(command, use_udp=not use_tcp)
+
+    async def send_focus_speed(self, speed: int, camera: int) -> bool:
+        """
+        Set focus speed for a camera.
+
+        Args:
+            speed: Speed value [0-100%] of max hardware focus speed
+            camera: Camera number (1, 2, or 3)
+        """
+        command = self.eup_protocol.build_focus_speed(speed, camera)
+        use_tcp = self.tcp_writer is not None
+        return await self.send_command(command, use_udp=not use_tcp)
+
     async def send_focus_speed_multiplier(self, camera: int, multiplier: float) -> bool:
         """Set focus speed multiplier."""
         command = self.eup_protocol.build_focus_speed_multiplier(multiplier, camera)

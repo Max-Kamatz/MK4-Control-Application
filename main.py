@@ -89,11 +89,30 @@ def main():
         lambda: main_window.network_thread.send_pan_tilt(0.0, 0.0)
     )
 
-    # Connect speed control sliders
+    # Pan/Tilt speed control
+    # NOTE: The sliders themselves don't trigger movement - they just store values.
+    # Arrow buttons READ the slider values and EMIT pan_speed_changed/tilt_speed_changed.
+    # These signals below are triggered BY ARROW BUTTONS (not by moving the slider).
     combined_tab.pan_speed_changed.connect(main_window.network_thread.send_pan_speed)
     combined_tab.tilt_speed_changed.connect(main_window.network_thread.send_tilt_speed)
-    combined_tab.zoom_speed_changed.connect(main_window.network_thread.send_zoom)
-    combined_tab.focus_speed_changed.connect(main_window.network_thread.send_focus)
+
+    # Zoom/Focus speed sliders set the speed parameter (0-100%) for the selected camera
+    def handle_zoom_speed_changed(speed: float):
+        """Convert slider value (0.0-1.0) to percentage (0-100) and send to selected camera."""
+        camera_str = combined_tab.get_selected_camera()  # "Camera1", "Camera2", or "Camera3"
+        camera_num = int(camera_str.replace("Camera", ""))  # Extract number: 1, 2, or 3
+        speed_percent = int(speed * 100)  # Convert 0.0-1.0 to 0-100
+        main_window.network_thread.send_zoom_speed(speed_percent, camera_num)
+
+    def handle_focus_speed_changed(speed: float):
+        """Convert slider value (0.0-1.0) to percentage (0-100) and send to selected camera."""
+        camera_str = combined_tab.get_selected_camera()  # "Camera1", "Camera2", or "Camera3"
+        camera_num = int(camera_str.replace("Camera", ""))  # Extract number: 1, 2, or 3
+        speed_percent = int(speed * 100)  # Convert 0.0-1.0 to 0-100
+        main_window.network_thread.send_focus_speed(speed_percent, camera_num)
+
+    combined_tab.zoom_speed_changed.connect(handle_zoom_speed_changed)
+    combined_tab.focus_speed_changed.connect(handle_focus_speed_changed)
 
     def handle_connection_toggle():
         if not main_window.network_thread.network_manager or not main_window.network_thread.network_manager.connected:
@@ -168,9 +187,8 @@ def main():
     camera_settings_tab.zoom_to_pos_changed.connect(
         lambda camera, position: main_window.network_thread.send_zoom_to_position(camera, position)
     )
-    camera_settings_tab.one_push_af_pressed.connect(
-        lambda camera: main_window.network_thread.send_autofocus(camera)
-    )
+    # NOTE: one_push_af_pressed is connected later at line ~386 to send_one_push_af()
+    # DO NOT connect it here to send_autofocus() - that sends FocusMode:1 (continuous AF), not RunAf (one-push)
     camera_settings_tab.camera_profile_changed.connect(
         lambda camera, profile: main_window.network_thread.send_camera_profile(camera, profile)
     )

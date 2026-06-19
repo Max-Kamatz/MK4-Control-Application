@@ -1095,6 +1095,46 @@ class NetworkThread(QThread):
             except Exception as e:
                 logger.error(f"Error sending one-push AF: {e}")
 
+    def send_zoom_speed(self, speed: int, camera: int):
+        """
+        Set zoom speed for a camera.
+
+        Args:
+            speed: Speed value [0-100%] of max hardware zoom speed
+            camera: Camera number (1, 2, or 3)
+        """
+        if self.loop and self.network_manager:
+            future = asyncio.run_coroutine_threadsafe(
+                self.network_manager.send_zoom_speed(speed, camera),
+                self.loop
+            )
+            try:
+                success = future.result(timeout=1.0)
+                if success:
+                    logger.info(f"Set zoom speed: Camera{camera}, {speed}%")
+            except Exception as e:
+                logger.error(f"Error setting zoom speed: {e}")
+
+    def send_focus_speed(self, speed: int, camera: int):
+        """
+        Set focus speed for a camera.
+
+        Args:
+            speed: Speed value [0-100%] of max hardware focus speed
+            camera: Camera number (1, 2, or 3)
+        """
+        if self.loop and self.network_manager:
+            future = asyncio.run_coroutine_threadsafe(
+                self.network_manager.send_focus_speed(speed, camera),
+                self.loop
+            )
+            try:
+                success = future.result(timeout=1.0)
+                if success:
+                    logger.info(f"Set focus speed: Camera{camera}, {speed}%")
+            except Exception as e:
+                logger.error(f"Error setting focus speed: {e}")
+
     def send_focus_speed_multiplier(self, camera: int, multiplier: float):
         """Set focus speed multiplier."""
         if self.loop and self.network_manager:

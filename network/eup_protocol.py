@@ -449,12 +449,57 @@ class EUPProtocol:
 
     def build_one_push_af(self, camera: int = 1) -> str:
         """
-        Trigger one-time autofocus.
+        Trigger one-time autofocus (one-push AF).
+
+        Per EUP Protocol v2.4.7 Section 4.2.1 (Lens Control):
+        - RunAf: Start autofocus (one-push autofocus)
+        - StopAf: Stop autofocus
 
         Args:
             camera: Camera number
+
+        Returns:
+            Command string: ID:N/Command/Camera{X}/Lens/RunAf
         """
-        return self._build_command(f"Camera{camera}", "Lens", "OnePushAf")
+        return self._build_command(f"Camera{camera}", "Lens", "RunAf")
+
+    def build_stop_af(self, camera: int = 1) -> str:
+        """
+        Stop autofocus operation.
+
+        Args:
+            camera: Camera number
+
+        Returns:
+            Command string: ID:N/Command/Camera{X}/Lens/StopAf
+        """
+        return self._build_command(f"Camera{camera}", "Lens", "StopAf")
+
+    def build_zoom_speed(self, speed: int, camera: int = 1) -> str:
+        """
+        Set zoom speed (how fast zoom moves when ZoomIn/ZoomOut commands are sent).
+
+        Args:
+            speed: Speed value [0-100%] of max hardware zoom speed
+            camera: Camera number
+
+        Returns:
+            Command string: ID:N/Command/Camera{X}/Lens/ZoomSpeed:{speed}
+        """
+        return self._build_command(f"Camera{camera}", "Lens", "ZoomSpeed", str(speed))
+
+    def build_focus_speed(self, speed: int, camera: int = 1) -> str:
+        """
+        Set focus speed (how fast focus moves when FocusFar/FocusNear commands are sent).
+
+        Args:
+            speed: Speed value [0-100%] of max hardware focus speed
+            camera: Camera number
+
+        Returns:
+            Command string: ID:N/Command/Camera{X}/Lens/FocusSpeed:{speed}
+        """
+        return self._build_command(f"Camera{camera}", "Lens", "FocusSpeed", str(speed))
 
     def build_focus_speed_multiplier(self, multiplier: float, camera: int = 1) -> str:
         """
